@@ -3,34 +3,40 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ruben Van Laer</title>
-  <link rel="icon" type="image/x-icon" href="assets/transparent_favicon.png">
+  <title>Niklas Van der Mersch</title>
+  <link rel="icon" type="image/png" href="assets/Logo.png">
   <link rel="stylesheet" href="css/styles.css">
+  <script>
+    const LINK_URLS = Object.freeze({
+      email: 'mailto:niklas@vandermersch.eu',
+      instagram: 'https://www.instagram.com/n.vdm/?__d=11',
+      youtube: 'https://www.youtube.com/@nvdmmm',
+      github: 'https://github.com/niklasvdm',
+      ebayStore: 'https://www.benl.ebay.be/usr/niklasvdm',
+      billbuddyArticle: 'posts/publicly-exposing-billbuddy.html',
+      blogExample: 'posts/example-post.html'
+    });
+  </script>
   <script src="js/script.js" defer></script>
 </head>
-<body class="dark-mode">
+<body>
     <div id="header">
-    <div id="title-div">
-        <!-- <div id="logo">
-            <img src="assets/transparent_favicon.png">
-        </div> -->
-        <div id="title">Ruben Van Laer</div>
-    </div>
-
-
-
-    <button id="theme-toggle">
-        <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path d="m15 2h2v3h-2z"/><path d="m27 15h3v2h-3z"/><path d="m15 27h2v3h-2z"/><path d="m2 15h3v2h-3z"/><path d="m6.22 5.73h2v3h-2z" transform="matrix(.70710678 -.70710678 .70710678 .70710678 -3 7.23)"/><path d="m23.27 6.23h3v2h-3z" transform="matrix(.70710678 -.70710678 .70710678 .70710678 2.14 19.63)"/><path d="m23.77 23.27h2v3h-2z" transform="matrix(.70710678 -.70710678 .70710678 .70710678 -10.26 24.77)"/><path d="m5.47 25.13 2.12-2.13 1.41 1.42-2.12 2.12z"/><path d="m16 8a8 8 0 1 0 8 8 8 8 0 0 0 -8-8zm0 14a6 6 0 0 1 0-12z"/><path d="m0 0h32v32h-32z" fill="none"/></svg>
-    </button>
-
+        <div id="title-div">
+            <div id="title">Niklas Van der Mersch</div>
+        </div>
     </div>
 
     <main>
         <section id="about-me">
             <h2 class="section-title">About Me</h2>
             
-            <div class="content-box">
-                <p>Hi! I am a recent CS graduate, looking to take on their next project in this world.</p>
+            <div class="content-box about-card" data-order="1">
+                <div class="about-card__media">
+                    <img src="assets/photo.png" alt="Workbench setup that inspires my nightly projects" loading="lazy">
+                </div>
+                <div class="about-card__content">
+                    <p>Hi! In my citizen life, I work as a Security Architect. During the night, I dive into side projects.</p>
+                </div>
             </div>
             <!-- <div class="content-box" data-order="1" data-toggles="About">
                 Lorem ipsum dolor Lorem ipsum dolor<br>Lorem ipsum dolor<br>
@@ -45,84 +51,73 @@
                 Quisque venenatis, nisi eu aliquet elementum, <br> nunc ligula commodo libero Quisque venenatis, <br> nisi eu aliquet elementum, <br> nunc ligula commodo libero
               </div> -->
         </section>
-        <section id="contact">
+        <section id="Contact">
             <h2 class="section-title">Contact</h2>
-            <div class="content-box" data-order="1" data-toggles="Contact test" id="email">
-                <b>Email Address</b><br>email@rubenvanlaer.com
+            <div class="content-box" data-order="4" data-toggles="Email" id="email">
+                <span class="social-label">
+                    <svg class="social-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <path d="M2 4h20a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Zm10 8.15L4.47 6.62 3.53 7.9 12 13.85l8.47-5.95-.94-1.28Z" />
+                    </svg>
+                    <span>Email Address</span>
+                </span>
+                <a class="social-link" href="#" data-link-key="email">niklas@vandermersch.eu</a>
             </div>
-            <div class="content-box" data-order="2" data-toggles="test" id="phone-number">
-                <b>Phone Number</b><br>-
+            <div class="content-box" data-order="2" data-toggles="Contact" id="instagram">
+                <span class="social-label">
+                    <img class="social-icon" src="assets/IG-favicon.png" alt="" loading="lazy">
+                    <span>Instagram</span>
+                </span>
+                <a class="social-link" href="#" data-link-key="instagram">n.vdm</a>
             </div>
-            <div class="content-box" data-order="3" data-toggles="Contact About" id="linkedin">
-                <b>LinkedIn</b><br><a href="https://www.linkedin.com/in/ruben-van-laer">Ruben Van Laer</a>
+            <div class="content-box" data-order="1" data-toggles="Contact" id="youtube">
+                <span class="social-label">
+                    <img class="social-icon" src="assets/youtube-favicon.ico" alt="" loading="lazy">
+                    <span>YouTube</span>
+                </span>
+                <a class="social-link" href="#" data-link-key="youtube">SimplyBuilt</a>
             </div>
-            <div class="content-box" data-order="4" data-toggles="Contact" id="github">
-                <b>GitHub</b><br><a href="https://github.com/ruben-vl">ruben-vl</a>
+            <div class="content-box" data-order="3" data-toggles="Contact" id="github">
+                <span class="social-label">
+                    <img class="social-icon" src="assets/gh-favicon.ico" alt="" loading="lazy">
+                    <span>GitHub</span>
+                </span>
+                <a class="social-link" href="#" data-link-key="github">niklasvdm</a>
             </div>
-            <div class="content-box" data-order="5" data-toggles="Contact" id="public-key">
-                <b>Public Key Fingerprint</b><br>-
+            <!--<div class="content-box" data-order="5" data-toggles="Contact" id="public-key">
+                <span class="social-label">
+                    <svg class="social-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <path d="M12 2a7 7 0 0 0-7 7 6.94 6.94 0 0 0 4 6.29V18a1 1 0 0 0 1.45.89l1.55-.78 1.55.78A1 1 0 0 0 15 18v-2.71a6.94 6.94 0 0 0 4-6.29 7 7 0 0 0-7-7Zm1 12.83V17l-.55-.28a1 1 0 0 0-.9 0L11 17v-2.17a5 5 0 1 1 2 0Z" />
+                    </svg>
+                    <span>Public Key Fingerprint</span>
+                </span>
+                <span>-</span>
+            </div>-->
+        </section>
+        <section id="products">
+            <h2 class="section-title">Products</h2>
+            <div class="content-box product-card" data-order="1">
+                <a class="product-card__logo" href="#" data-link-key="ebayStore" target="_blank" rel="noopener noreferrer">
+                    <img class="product-card__image" src="assets/Stickers.png" alt="Vinyl stickers for light switches" loading="lazy">
+                </a>
+                <div class="product-card__content">
+                    <h3 class="product-card__title">Light Switch Stickers</h3>
+                    <p class="product-card__description">Durable stickers showing every room at a glance. Sized for European plates, these waterproof stickers brighten up your room.</p>
+                    <a class="product-card__cta" href="#" data-link-key="ebayStore" target="_blank" rel="noopener noreferrer">
+                        <img class="product-card__cta-logo" src="assets/ebay.png" alt="eBay" loading="lazy">
+                        <span>Interested?</span>
+                    </a>
+                </div>
             </div>
         </section>
+        <!--<section id="blog-posts">
+            <h2 class="section-title">Blog Posts</h2>
+            <article class="content-box blog-card" data-order="1">
+                <span class="blog-card__meta">August 29, 2025 · Project log</span>
+                <a class="blog-card__title" href="#" data-link-key="billbuddyArticle">Publicly exposing Billbuddy</a>
+                <p class="blog-card__excerpt">From DNS prep to WAF tuning—how Billbuddy went from home lab secret to safely exposed service.</p>
+            </article>
+        </section>-->
     </main>
-
-  
-
-<!-- 
-
-  <div id="content-boxes">
-     -->
-
-<!-- 
-    <div class="content-box" data-order="1" data-toggles="About">
-      Lorem ipsum dolor
-    </div>
-    <div class="content-box" data-order="2" data-toggles="">
-      Quisque venenatis, nisi eu aliquet elementum, <br> nunc ligula commodo libero Quisque venenatis, <br> nisi eu aliquet elementum, <br> nunc ligula commodo libero
-    </div>
-    <div class="content-box" data-order="3" data-toggles="">
-      Quisque venenatis
-    </div>
-    <div class="content-box" data-order="4" data-toggles="About">
-      Quisque ven <br> Quisque ven
-    </div>
-    <div class="content-box" data-order="5" data-toggles="">
-      Quisque venenatis, nisi eu aliquet elementum, nunc ligula commodo libero
-    </div>
-
-    <div class="content-box" data-order="1" data-toggles="">
-        Lorem ipsum dolor
-      </div>
-      <div class="content-box" data-order="2" data-toggles="">
-        Quisque venenatis, nisi eu aliquet elementum, <br> nunc ligula commodo libero Quisque venenatis, <br> nisi eu aliquet elementum, <br> nunc ligula commodo libero
-      </div> -->
-      <!-- <div class="content-box" data-order="3" data-toggles="About">
-        Quisque venenatis
-      </div>
-      <div class="content-box" data-order="4" data-toggles="About">
-        Quisque ven <br> Quisque ven
-      </div>
-      <div class="content-box" data-order="5" data-toggles="">
-        Quisque venenatis, nisi eu aliquet elementum, nunc ligula commodo libero
-      </div>
-
-      <div class="content-box" data-order="1" data-toggles="">
-        Lorem ipsum dolor
-      </div>
-      <div class="content-box" data-order="2" data-toggles="">
-        Quisque venenatis, nisi eu aliquet elementum, <br> nunc ligula commodo libero Quisque venenatis, <br> nisi eu aliquet elementum, <br> nunc ligula commodo libero
-      </div>
-      <div class="content-box" data-order="3" data-toggles="">
-        Quisque venenatis
-      </div>
-      <div class="content-box" data-order="4" data-toggles="">
-        Quisque ven <br> Quisque ven
-      </div>
-      <div class="content-box" data-order="5" data-toggles="">
-        Quisque venenatis, nisi eu aliquet elementum, nunc ligula commodo libero
-      </div> -->
-<!-- 
-  </div> -->
-
   
 </body>
 </html>

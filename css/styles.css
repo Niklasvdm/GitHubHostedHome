@@ -68,9 +68,9 @@ p, h1, h2, h3, h4, h5, h6 {
 
 @media (max-width: 768px) {
 :root {
-    --title-font-size: 5vw;
-    --toggle-font-size: 2.5vw;
-    --section-title-font-size: 2.5vw;
+    --title-font-size: 6.5vw;
+    --toggle-font-size: 3.2vw;
+    --section-title-font-size: 4.8vw;
 }
 }
 

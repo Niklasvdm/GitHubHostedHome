@@ -1,11 +1,5 @@
 # Personal Website
 
-## Ideas
-
-Just a grid of boxes with a default ordering. On top of the page, buttons to toggle the highlight of certain boxes. Moves them to the top when highlighted.
-
-Toggle the search buttons
-
 ## Local preview
 
 - Option 1: double-click `index.html` and open it in any modern browser; this works because all assets live under `css/`, `js/`, and `assets/` in the repository.

@@ -30,7 +30,7 @@
                 </div>
                 <div class="markdown-body">
                     <h3>So I needed a website</h3>
-                    <p>I am not a huge fan of writing back-ends, spinning up WordPress instances, or generally spending hours tinkering with front-end frameworks.</p>
+                    <p>I am not a huge fan of writing front-ends, spinning up WordPress instances, or generally spending hours tinkering with front-end frameworks.</p>
                     <p>While talking to one of my good friends (shoutout to Ruben), he mentioned he had his whole site running via GitHub Pages. I could not believe it, so I added “ship my own GitHub-hosted site” to the project list.</p>
 
                     <h4>Getting started with GitHub Pages</h4>
@@ -39,7 +39,7 @@
 
                     <h4>Adding a Custom domain</h4>
                     <p>Pointing my own domain to the project was easier than expected by following <a href="https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site" target="_blank" rel="noopener noreferrer">GitHub’s custom domain guide</a>. It walks through the DNS records, the `CNAME` file, and HTTPS verification in a few concise steps.</p>
-                    <p> I personally use GoDaddy, which required that I deleted some automatic CNAME record and making sure the default CNAME record is pointing to the GitHub pages as is specified within the provided documentation.</p>
+                    <p> I personally use GoDaddy, which required that I deleted some automatic CNAME records and making sure the only CNAME record configured, is pointing to the GitHub pages as is specified within the provided documentation. I ignored the AAA records for now as I'm not too worried about IPv6 due to this being managed by Microsoft in this case. I only added the A records and I actually am looking into cleaning up my other A rules in favour of AAA rules for my other subdomains.</p>
                     <p> I'm happy I have already struggled with this in the past, as I now have sufficient documentation about DNS records that I can easily find the information I need.</p>
 
                     <h4>Adding a landing page on github</h4>

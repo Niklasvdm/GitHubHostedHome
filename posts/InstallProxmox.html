@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Setting up a website via GitHub</title>
+  <link rel="icon" type="image/png" href="../assets/Logo.png">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script src="../js/script.js" defer></script>
+</head>
+<body>
+    <div id="header">
+        <div id="title-div">
+            <div id="title">Niklas Van der Mersch</div>
+        </div>
+    </div>
+
+    <main>
+        <section id="blog-post">
+            <h2 class="section-title">Setting up a website via GitHub</h2>
+            <article class="content-box blog-article" data-order="1">
+                <a class="blog-article__back blog-article__back--top" href="../index.html">
+                    <span aria-hidden="true">←</span>
+                    <span>Back to the homepage</span>
+                </a>
+                <div class="blog-article__meta">
+                    <span>October 18, 2025</span>
+                    <span>~3 minute read</span>
+                    <span>Tags: github-pages, diy-site</span>
+                </div>
+                <div class="markdown-body">
+                    <h3>So I needed a website</h3>
+                    <p>I am not a huge fan of writing front-ends, spinning up WordPress instances, or generally spending hours tinkering with front-end frameworks.</p>
+                    <p>While talking to one of my good friends (shoutout to Ruben), he mentioned he had his whole site running via GitHub Pages. I could not believe it, so I added “ship my own GitHub-hosted site” to the project list.</p>
+
+                    <h4>Getting started with GitHub Pages</h4>
+                    <p>As with many weekend projects, I kicked things off by cloning something that already looked great: <a href="https://www.rubenvanlaer.com" target="_blank" rel="noopener noreferrer">rubenvanlaer</a>, source code: <a href="https://github.com/ruben-vl/personal-website" target="_blank" rel="noopener noreferrer">ruben-vl/personal-website</a>.</p>
+                    <p>Using that as a base, I kept the clean structure but swapped in my own sections, content, and styling tweaks so the site felt like mine. <a href="https://github.com/Niklasvdm/GitHubHostedHome" target="_blank" rel="noopener noreferrer">niklasvdm/GithubHostedHome</a> </p>
+
+                    <h4>Adding a Custom domain</h4>
+                    <p>Pointing my own domain to the project was easier than expected by following <a href="https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site" target="_blank" rel="noopener noreferrer">GitHub’s custom domain guide</a>. It walks through the DNS records, the `CNAME` file, and HTTPS verification in a few concise steps.</p>
+                    <p> I personally use GoDaddy, which required that I deleted some automatic CNAME records and making sure the only CNAME record configured, is pointing to the GitHub pages as is specified within the provided documentation. I ignored the AAA records for now as I'm not too worried about IPv6 due to this being managed by Microsoft in this case. I only added the A records and I actually am looking into cleaning up my other A rules in favour of AAA rules for my other subdomains.</p>
+                    <p> I'm happy I have already struggled with this in the past, as I now have sufficient documentation about DNS records that I can easily find the information I need.</p>
+
+                    <h4>Adding a landing page on github</h4>
+                    <p>The finishing touch was a simple landing page for my GitHub profile. I loosely followed <a href="https://www.instagram.com/reel/DOtC-bJkV6I/?igsh=MWwxOWl1bzd4ZndhcQ==" target="_blank" rel="noopener noreferrer">this quick Instagram walkthrough</a> and relied on ChatGPT to provide the boilerplate content, changing some stuff to align with what I'm working on and not providing too much info on what I am not too proud of...</p>
+                    <p>You simply make a new public repo that has the same name as your GitHub name. In this way, the README will display as the information presented on your profile.</p>
+                    <p> So I simply had to add ´Niklasvdm/Niklasvdm´, add an automatic README.md and I was ready to get started adding the content! </p>
+                    <p>The result is now displayed my <a href="https://github.com/niklasvdm" target="_blank" rel="noopener noreferrer">GitHub landing page</a>. Ignore the fact that I don't seem to push much to GitHub (I've never truly cared about having contributions, otherwise I'd have automated it by now), and simply copy-paste some emoji-filled, chaptgpt-generated content into your own README for fast & quick boilerplating. </p>
+                    <p>If I'm ever looking for a Developer job again (god I hope I won't have to but chances are not in my young-person favour), I might change it, but at least I won't have to look up how to set it up again and I can simply edit the content within the repo's README.</p>
+                    
+                    <h4>Takeaways</h4>
+                    <ul>
+                        <li>Cloning a proven template let me focus on content instead of fiddling with layout.</li>
+                        <li>GitHub Pages plus DNS tweaks is all you need to serve a custom domain without running infrastructure.</li>
+                        <li>Using ChatGPT to generate boilerplate HTML/CSS snippets really is a lifesavor. It made me not dread making this project since I can rely on it to deal with the unpleasant formatting.</li>
+                        <li>A polished GitHub profile page takes less than an hour when you start with good references.</li>
+                    </ul>
+                </div>
+                <a class="blog-article__back" href="../index.html">
+                    <span aria-hidden="true">←</span>
+                    <span>Back to the homepage</span>
+                </a>
+            </article>
+        </section>
+    </main>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Data at rest Encryption with ProxMox setup</title>
+  <title>Encryption at rest, Proxmox and Tertaform: the infrastructure of my home lab</title>
   <link rel="icon" type="image/png" href="../assets/Logo.png">
   <link rel="stylesheet" href="../css/styles.css">
   <script src="../js/script.js" defer></script>
@@ -17,7 +17,7 @@
 
     <main>
         <section id="blog-post">
-            <h2 class="section-title">Data at rest Encryption with ProxMox setup</h2>
+            <h2 class="section-title">Encryption at rest, Proxmox and Terraform: the infrastructure of my home lab</h2>
             <article class="content-box blog-article" data-order="1">
                 <a class="blog-article__back blog-article__back--top" href="../index.html">
                     <span aria-hidden="true">←</span>
@@ -25,36 +25,295 @@
                 </a>
                 <div class="blog-article__meta">
                     <span>November 1, 2025</span>
-                    <span>~3 minute read</span>
-                    <span>Tags: github-pages, diy-site</span>
+                    <span>~9 minute read</span>
+                    <span>Tags: proxmox, terraform, encryption, homelab, lxc, vm</span>
                 </div>
                 <div class="markdown-body">
-                    <h3>So I needed a website</h3>
-                    <p>I am not a huge fan of writing front-ends, spinning up WordPress instances, or generally spending hours tinkering with front-end frameworks.</p>
-                    <p>While talking to one of my good friends (shoutout to Ruben), he mentioned he had his whole site running via GitHub Pages. I could not believe it, so I added “ship my own GitHub-hosted site” to the project list.</p>
+                    <h3>The goal</h3>
+                    <p>On my journey of home labbing, I decided my next project would be related to encryption. Specifically, I wanted to set up encryption at rest. Starting on systems I didn't care if it failed, so that I can later do it on the systems I use daily.</p>
+                    <p>Since I would already set up a clean operating system on these devices, I thought you my self I might as well take it one step further and also set up these devices so I could host services on them. I got the inspiration for using <b>ProxMox</b> from some colleagues of mine, as they swore by the ease of use. </p>
+                    <p>I had already started considering using <b>Terraform</b> for the resources, but no one around me knew much this setup, so that part of the journey I'd have to figure out on my own.</p>
 
-                    <h4>Getting started with GitHub Pages</h4>
-                    <p>As with many weekend projects, I kicked things off by cloning something that already looked great: <a href="https://www.rubenvanlaer.com" target="_blank" rel="noopener noreferrer">rubenvanlaer</a>, source code: <a href="https://github.com/ruben-vl/personal-website" target="_blank" rel="noopener noreferrer">ruben-vl/personal-website</a>.</p>
-                    <p>Using that as a base, I kept the clean structure but swapped in my own sections, content, and styling tweaks so the site felt like mine. <a href="https://github.com/Niklasvdm/GitHubHostedHome" target="_blank" rel="noopener noreferrer">niklasvdm/GithubHostedHome</a> </p>
-
-                    <h4>Adding a Custom domain</h4>
-                    <p>Pointing my own domain to the project was easier than expected by following <a href="https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site" target="_blank" rel="noopener noreferrer">GitHub’s custom domain guide</a>. It walks through the DNS records, the `CNAME` file, and HTTPS verification in a few concise steps.</p>
-                    <p> I personally use GoDaddy, which required that I deleted some automatic CNAME records and making sure the only CNAME record configured, is pointing to the GitHub pages as is specified within the provided documentation. I ignored the AAA records for now as I'm not too worried about IPv6 due to this being managed by Microsoft in this case. I only added the A records and I actually am looking into cleaning up my other A rules in favour of AAA rules for my other subdomains.</p>
-                    <p> I'm happy I have already struggled with this in the past, as I now have sufficient documentation about DNS records that I can easily find the information I need.</p>
-
-                    <h4>Adding a landing page on github</h4>
-                    <p>The finishing touch was a simple landing page for my GitHub profile. I loosely followed <a href="https://www.instagram.com/reel/DOtC-bJkV6I/?igsh=MWwxOWl1bzd4ZndhcQ==" target="_blank" rel="noopener noreferrer">this quick Instagram walkthrough</a> and relied on ChatGPT to provide the boilerplate content, changing some stuff to align with what I'm working on and not providing too much info on what I am not too proud of...</p>
-                    <p>You simply make a new public repo that has the same name as your GitHub name. In this way, the README will display as the information presented on your profile.</p>
-                    <p> So I simply had to add ´Niklasvdm/Niklasvdm´, add an automatic README.md and I was ready to get started adding the content! </p>
-                    <p>The result is now displayed my <a href="https://github.com/niklasvdm" target="_blank" rel="noopener noreferrer">GitHub landing page</a>. Ignore the fact that I don't seem to push much to GitHub (I've never truly cared about having contributions, otherwise I'd have automated it by now), and simply copy-paste some emoji-filled, chaptgpt-generated content into your own README for fast & quick boilerplating. </p>
-                    <p>If I'm ever looking for a Developer job again (god I hope I won't have to but chances are not in my young-person favour), I might change it, but at least I won't have to look up how to set it up again and I can simply edit the content within the repo's README.</p>
+                    <h3>Something something bootable Debian drive</h3>
+                    <p>The kick-off for this project was researching my possibilities in terms of data at rest encryption. I am familiar with this functionality on Windows (BitLocker?). But as from my experience you only use Windows as a last resort. So my journey led me to finding <b>LUKS</b> for full-disk encryption.</p>
                     
+                    <p>Queue to downloading <b>Debian 13: Trixie</b> and <s>wait where's my bootable drive?</s>... Queue to setting up my bootable drive. 
+                    Using <pre><code>sudo dd if=debian-13.1.0-amd64-netinst.iso of=/dev/sda bs=4M status=progress oflag=sync</code></pre>, my USB drive was now ready for my ambitions.</p>
+
+                    <h3>Setting up Debian</h3>
+                    <p>This part was the easiest part. 
+                    Following the GUI installer is very easy, as it guides you through the installation process seamlessly. 
+                    I'd done this quite a few times before, so I figured that in the past I must've glossed over the supposedly easy 'encrypt drive' option at <i>some</i> point during the installation process.</p>
+                    
+                    <p> My notes for doing this again only contain 2 clear instructions:
+                    1. Do not choose your own domain unless you have that set up robustly on your local network (my install gave the domain from the ISP and I ambitiously thought I could just add my own domain without having custom infra - I couldn't connect to the network).
+                    2. When reaching the partition disks step, select "Guided – use entire disk and set up encrypted LVM" . 
+                    3. I also activated the SSH server immediately, but don't forget to add your SSH keys later on for full fletched Security. 
+                       Modern systems have root SSH disabled by default, so that is also something I like to see. 
+                    The end result looks something like </p>
+                    <pre><code>
+┌───────────────────────────────┐
+│    /dev/sda (physical disk)   │
+├───────────────────────────────┤
+│   LUKS container (dm-crypt)   │ ← encryption boundary
+├───────────────────────────────┤
+│      LVM volume group         │
+│   ├─ logical volume: root     │
+│   ├─ logical volume: swap     │
+│   └─ (maybe home, var, etc.)  │
+├───────────────────────────────┤
+│     ext4/xfs filesystems      │
+└───────────────────────────────┘ 
+                    </code></pre>
+                    <p>
+                    Now it's just a matter of choosing a good encryption key and letting the installation process do its thing. 
+                    The rest should look like a typical OS install. <br>
+                    <i> Don't  forget to add a shortcut for opening a terminal! CTRL+ALT+T -> gnome-terminal has been a life savior of mine for years now</i>
+                    </p>
+                    
+                    <p> Now all of my temporary files are encrypted except for the boot folder, meaning if my PC is stolen they cannot retrieve any data. I'm not planning to host anything I shouldn't, but it's nice to know I can now store data relatively more safely.</p>
+
+                    <h3>Setting up ProxMox</h3>
+                    
+                    <p>We were of course just getting started! Time to prepare my host machine for setting up my virtualization system! 
+                    This part was made easier by ChatGPT and troubleshooting along the way.
+                    Make sure your os is updated and upgraded by running
+                    <pre><code>
+sudo apt update && sudo apt full-upgrade -y
+sudo reboot
+                    </code></pre>
+                    The system will reboot (good practise) and there'll be a prompt to insert your (de)cryption password. If this doesn't pop up, you did something wrong (or are just here for the ProxMox setup 😉).
+                     </p>
+                     <h4>Preparing the network</h4>
+                     <p>
+                     Before installing the necessary packages, my experience has taught me one important factor about the ProxMox install I didn't read anywhere.
+                     <b>It completely disables all network traffic</b>. 
+                     Even though I haven't tried running this script before installing ProxMox, but if running it before the install doesn't work, trust me - at least you have it for after the installation is finished and you can't connect to the system via SSH.
+                     The logic is easy - once the system has been set up, the following code tells the networking part of the OS that it should contact your local gateway to be assigned an IP.
+                     This'll only do it over a wired connection though. 
+                     You <i>can</i> tweak it to use Wi-Fi, but this has several downsides later on. 
+                     So if you can, simply set it up like this and get your network cable ready.
+                     <pre><code>
+#!/usr/bin/env bash
+# Author: Niklas Van der Mersch
+# Version: 1.0.0
+# Sets up bridging on Ethernet Network Interface, dynamic IP assignment
+    
+    
+# Run with `sudo bash setupLanBridge.sh`
+# Configure Proxmox LAN bridge (no NAT)
+
+set -euo pipefail
+BRIDGE_NAME="vmbr0"
+
+ETH_DEV="$(ip -4 route show default | awk '/default/ {print $5; exit}')"
+[[ -n "$ETH_DEV" ]] || { echo "No uplink found"; exit 1; }
+
+cp -a /etc/network/interfaces /etc/network/interfaces.backup.$(date +%s)
+
+cat >/etc/network/interfaces &lt;&lt;EOF
+auto lo
+iface lo inet loopback
+
+iface ${ETH_DEV} inet manual
+
+auto ${BRIDGE_NAME}
+iface ${BRIDGE_NAME} inet dhcp
+    bridge-ports ${ETH_DEV}
+    bridge-stp off
+    bridge-fd 0
+EOF
+
+echo "[+] Applied LAN bridge config with uplink: ${ETH_DEV}"
+systemctl restart networking
+ip a show ${BRIDGE_NAME}
+
+                     </code></pre>
+                     Simply copy the code and run the script on the target system before continuing to the next part.
+                     </p>
+                     <h4> Installing the necessary packages </h4>
+                    <p>
+                    For the next part, this guide contains all the information you need too <a href="https://pve.proxmox.com/wiki/Install_Proxmox_VE_on_Debian_13_Trixie" target="_blank" rel="noopener noreferrer">official ProxMox installation guide for Debian 13 Trixie</a>.
+                    Here are the commands I ran:
+                    <pre><code>
+sudo bash -c 'cat > /etc/apt/sources.list.d/pve-install-repo.sources << EOL
+Types: deb
+URIs: http://download.proxmox.com/debian/pve
+Suites: trixie
+Components: pve-no-subscription
+Signed-By: /usr/share/keyrings/proxmox-archive-keyring.gpg
+EOL'
+
+
+# Repo key for trixie:
+wget https://enterprise.proxmox.com/debian/proxmox-archive-keyring-trixie.gpg \
+    -O /usr/share/keyrings/proxmox-archive-keyring.gpg
+
+# verify
+sha256sum /usr/share/keyrings/proxmox-archive-keyring.gpg
+136673be77aba35dcce385b28737689ad64fd785a797e57897589aed08db6e45 /usr/share/keyrings/proxmox-archive-keyring.gpg
+
+md5sum /usr/share/keyrings/proxmox-archive-keyring.gpg
+77c8b1166d15ce8350102ab1bca2fcbf /usr/share/keyrings/proxmox-archive-keyring.gpg
+
+sudo apt update
+sudo apt upgrade -y
+apt install proxmox-default-kernel
+systemctl reboot
+                    </code></pre>
+                    This should once again trigger a restart... 
+                    But this time you'll have some kernel changes.
+                    This won't be enough to fully have ProxMox installed, but at least it'll be set up. 
+                    </p>
+                    <p>
+                    There's a change you're <b>sweating</b> right now because of a screen that shows your PC can't start.
+                    What you are seeing is safe boot, and either you know what's going on and are looking down on me and others for panicking at such a simple concept, you're sighing over another arguably ineffective security measure, or you're like me and Googling the error (but sending a picture of the screen to Chat GPT is also understandable though not honourable). <br>
+                    If you've never seen this screen before, chances are there the password to unlock safe boot has been desperately looked for someone else before. 
+                    I found it <a href="https://bios-pw.org/" target="_blank" rel="noopener noreferrer"> on this life saving website, as have many otherts.</a>
+                    <br>
+                    If you recently bought your device or have not been able find something online, you can always try to contact the vendor.
+                    </p>
+                    <h4>Installing the full ProxMox stack and removing the Debian Kernel</h4>
+                    <p> 
+                    Now it's a matter of installing the right packages for ProxMox and removing the linux kernel.
+                    <pre><code>
+sudo apt install -y proxmox-ve pve-manager pve-cluster qemu-server open-iscsi chrony postfix
+# Pretty sure you can do it here already and skip step 4 entirely
+sudo apt remove -y linux-image-amd64 'linux-image-6.12*' || true
+sudo update-grub || true
+sudo systemctl reboot
+                    </code></pre>
+                    Everything should be set up correctly on the next boot!
+                    Do a <code>sudo apt update</code> to get the newest version of the packages when the reboot has finished.
+                    Potentially, there's some issues with <b>enterprise</b> packages not updating due to not being authorized. 
+                    In that case, run 
+                    <pre><code>
+grep -r "enterprise.proxmox.com" /etc/apt
+sudo rm -f /etc/apt/*/pve-enterprise* # Or generally all the ones displayed after the grep
+suo apt update
+                    </code></pre>
+                    </p>
+                    <p>
+                    This should remove the <b>enterprise</b> packages that were installed automatically, and keep only the 'community' edition.
+                    </p>
+                    <p>
+                    If you have connection problems at this point - for sure there's a problem with the networking. 
+                    You might need to troubleshoot your network connection, either making sure your cabled connection is coming through well or setting up a bridge with wireless instead.
+                    In both cases, Stak Overflow and Chat GPT are your friends, DHCP might not be 😅. 
+                    </p>
+                    <h3> Tasting the fruit of your labour </h3>
+                    <p>
+                    At this point, you should be able to log into the server on <code>https://ip-of-proxmox-device:8006</code>. 
+                    If you're unsure what that is, open a terminal on the device and run <code>ip a</code>.
+                    <br>
+                    Now you can enjoy your UI and play around with it a bit.
+                    The first thing I did was make sure I had the ISO installed for the latest version of Debian and generate an access token.
+                    I hoped that by applying Infrastructure as Code, I would  never have to open this UI again (except of course I had to because my terraform code did not work properly at all for a couple of hours). 
+                    </p>
+                    <h3> Making Terraform do the magic for me </h3>
+                    <p>
+                    Next, I hope I can help you out with my templates here:
+                    <pre><code>
+terraform {
+required_version = ">= 1.4.0"
+
+required_providers {
+proxmox = {
+    source  = "Telmate/proxmox"
+    version = "3.0.2-rc04"
+}
+}
+}
+
+# Provider credentials are injected via variables so token/URL details live in terraform.tfvars
+# rather than being hard-coded in source control.
+provider "proxmox" {
+pm_api_url          = local.proxmox_api_url
+pm_tls_insecure     = var.pm_tls_insecure
+pm_api_token_id     = var.pm_api_token_id
+pm_api_token_secret = var.pm_api_token_secret
+}
+resource "proxmox_lxc" "auth_server" {
+    target_node = var.target_node
+    vmid        = var.vmid
+    hostname    = var.hostname
+
+    ostemplate = var.ostemplate
+    password   = var.root_password
+    start      = true
+    onboot     = true
+
+    cores  = var.cores
+    memory = var.memory
+    swap   = var.swap
+
+    rootfs {
+    storage = var.rootfs_storage
+    size    = var.rootfs_size
+    }
+
+    network {
+    name   = "eth0"
+    bridge = var.bridge
+    ip     = local.container_cidr
+    gw     = var.gateway
+    }
+
+    # Push the operator's public key into the container so SSH keys are used during provisioning.
+    ssh_public_keys = file(var.ssh_public_key_path)
+
+    connection {
+    type        = "ssh"
+    host        = local.ssh_host
+    user        = "root"
+    private_key = file(var.ssh_private_key_path)
+    agent       = false
+    timeout     = "5m"
+    }
+
+    provisioner "remote-exec" {
+    inline = [
+        "apt-get update",
+        "DEBIAN_FRONTEND=noninteractive apt-get install -y python3 python3-venv python3-pip sqlite3 git",
+        "id authsrv >/dev/null 2>&1 || useradd --system --home ${local.app_dir} --shell /usr/sbin/nologin authsrv",
+        "mkdir -p ${local.app_dir} ${local.data_dir}",
+        "rm -rf ${local.app_dir}/src ${local.app_dir}/requirements ${local.app_dir}/config ${local.app_dir}/.venv",
+        "rm -f ${local.app_dir}/requirements.txt ${local.app_dir}/pyproject.toml"
+    ]
+    }
+                    </code></pre>
+
+                    Then run it with <pre><code>terraform init</code></pre> and <pre><code>terraform apply -var-file="env/nvdm01.tfvars"</code></pre>.
+
+                    This code won't work for you of course, but it can give you a basis to start from to adapt to your own requirements. 
+                    The most essential part is that you <b> use a private SSH key</b> for the container, use a <b>proper token id and token secret</b> and you should be ready to go.
+                    From here, some remote-execs, file privisioning and you should have a custom app running on an LXC container on ProxMox.
+                    I am now able to deploy my apps remotely to separate ProxMox instances by just swapping out key variables defined in my variables.tf file.
+                    If there is a lot of interest, I'd be willing to make a GitHub repo with templates.
+                    However, for now I suspect this blog post might not receive much attention so the effort doesn't really seem worth it.
+                    Let me know if you think otherwise!  
+                    </p>
+                    <h3> Small tweaks </h3>
+                    <h4> Disabling auto-suspend for when the device is in the charger</h4>
+                    <p>
+                    I setup my desktop to make sure that if it's plugged in, it never auto-suspends to make sure my ProxMox keeps running without issues.
+                    However, if I remove the power cable I like that it does suspend. 
+                    This way I can easily turn off proxmox and save power when I don't need it.
+                    For this, change <code>/etc/systemd/sleep.conf.d/nosuspend.conf</code> to
+                    <pre><code>
+[Sleep]
+AllowSuspend=no
+AllowHibernation=no
+AllowSuspendThenHibernate=no
+AllowHybridSleep=no
+                    </code></pre>
+                    </p>
                     <h4>Takeaways</h4>
                     <ul>
-                        <li>Cloning a proven template let me focus on content instead of fiddling with layout.</li>
-                        <li>GitHub Pages plus DNS tweaks is all you need to serve a custom domain without running infrastructure.</li>
-                        <li>Using ChatGPT to generate boilerplate HTML/CSS snippets really is a lifesavor. It made me not dread making this project since I can rely on it to deal with the unpleasant formatting.</li>
-                        <li>A polished GitHub profile page takes less than an hour when you start with good references.</li>
+                        <li>Terraform & ProxMox seems to be a small project currenrly ongoing, which is not something I'm used to coming from Azure/AWS/GRC.</li>
+                        <li>Encryption at rest was a lot easier to set up than I expected</li>
+                        <li>I really should write these posts as I'm doing my projects instead of waiting weeks/months to complete it.</li>
+                        <li>I hate working in the UI and strongly believe configuration should be encoded into each deployment. I love the fact that I can deploy containers and VMs via Terraform now. From now on all my projects will take on this form!</li>
                     </ul>
                 </div>
                 <a class="blog-article__back" href="../index.html">

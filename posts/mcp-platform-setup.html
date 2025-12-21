@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Setting Up an Example MCP Platform</title>
+  <link rel="icon" type="image/png" href="../assets/Logo.png">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script src="../js/script.js" defer></script>
+</head>
+<body>
+    <div id="header">
+        <div id="title-div">
+            <div id="title">Niklas Van der Mersch</div>
+        </div>
+    </div>
+
+    <main>
+        <section id="blog-post">
+            <h2 class="section-title">Setting Up an Example MCP Platform</h2>
+            <article class="content-box blog-article" data-order="1">
+                <a class="blog-article__back blog-article__back--top" href="../index.html">
+                    <span aria-hidden="true">←</span>
+                    <span>Back to the homepage</span>
+                </a>
+                <div class="blog-article__meta">
+                    <span>December 21, 2025</span>
+                    <span>~8 minute read</span>
+                    <span>Tags: mcp, ai, development, anthropic</span>
+                </div>
+                <div class="markdown-body">
+                    <h3>Introduction to MCP</h3>
+                    <p>The Model Context Protocol (MCP) is Anthropic's open standard for connecting AI assistants like Claude to external data sources and tools. Think of it as a universal adapter that lets AI applications securely access your company's knowledge base, interact with APIs, or execute code on your behalf.</p>
+                    <p>Unlike traditional API integrations that require custom code for each connection, MCP provides a standardized way for AI systems to discover and use tools. This means you can build an MCP server once and use it across any MCP-compatible client.</p>
+
+                    <h3>Why MCP Matters</h3>
+                    <p>Before MCP, integrating AI assistants with your tools meant building custom integrations for each platform. If you wanted Claude to access your Jira tickets, read files from Google Drive, and fetch GitHub repositories, you'd need separate implementations for each service.</p>
+                    <p>MCP solves this by defining a common protocol. You expose your tools through an MCP server, and any MCP client can discover and use them. This dramatically reduces the complexity of building AI-powered workflows.</p>
+
+                    <h3>Core Concepts</h3>
+                    <h4>MCP Servers</h4>
+                    <p>An MCP server exposes capabilities (resources, tools, or prompts) that AI assistants can use. Servers run locally or remotely and communicate with clients via standard input/output or HTTP.</p>
+                    <p>Each server defines:</p>
+                    <ul>
+                        <li><strong>Resources</strong>: Data that can be read (files, database records, API responses)</li>
+                        <li><strong>Tools</strong>: Actions that can be executed (create ticket, send email, run query)</li>
+                        <li><strong>Prompts</strong>: Templated instructions for common tasks</li>
+                    </ul>
+
+                    <h4>MCP Clients</h4>
+                    <p>Clients consume MCP servers. Claude Desktop, for example, is an MCP client that can connect to multiple servers simultaneously. When you ask Claude a question, it can discover available tools from connected servers and use them to complete your request.</p>
+
+                    <h3>Setting Up Your First MCP Server</h3>
+                    <p>Let's build a simple MCP server that exposes Jira-like ticket management functionality. We'll use Python and the official MCP SDK.</p>
+
+                    <h4>Step 1: Install the MCP SDK</h4>
+                    <p>First, create a new Python project and install the necessary dependencies:</p>
+                    <pre><code>pip install mcp
+pip install pydantic</code></pre>
+
+                    <h4>Step 2: Define Your Server Structure</h4>
+                    <p>Create a file called <code>server.py</code> with the basic server setup:</p>
+                    <pre><code>from mcp.server import Server
+from mcp.types import Tool, TextContent
+import json
+import os
+
+# Initialize the MCP server
+app = Server("jira-mcp-server")
+
+# In-memory ticket storage
+TICKETS = {}
+TICKET_COUNTER = 1</code></pre>
+
+                    <h4>Step 3: Implement Tool Handlers</h4>
+                    <p>Define the tools your server will expose. Here's an example of a "create ticket" tool:</p>
+                    <pre><code>@app.list_tools()
+async def list_tools() -> list[Tool]:
+    return [
+        Tool(
+            name="create_ticket",
+            description="Create a new Jira ticket",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "title": {"type": "string"},
+                    "description": {"type": "string"},
+                    "priority": {"type": "string", "default": "Medium"}
+                },
+                "required": ["title", "description"]
+            }
+        ),
+        Tool(
+            name="list_tickets",
+            description="List all tickets",
+            inputSchema={"type": "object", "properties": {}}
+        )
+    ]
+
+@app.call_tool()
+async def call_tool(name: str, arguments: dict) -> list[TextContent]:
+    global TICKET_COUNTER
+    
+    if name == "create_ticket":
+        ticket_id = f"TICKET-{TICKET_COUNTER}"
+        TICKET_COUNTER += 1
+        
+        TICKETS[ticket_id] = {
+            "id": ticket_id,
+            "title": arguments["title"],
+            "description": arguments["description"],
+            "priority": arguments.get("priority", "Medium"),
+            "state": "To Do"
+        }
+        
+        return [TextContent(
+            type="text",
+            text=f"Created ticket {ticket_id}"
+        )]
+    
+    elif name == "list_tickets":
+        ticket_list = json.dumps(TICKETS, indent=2)
+        return [TextContent(
+            type="text",
+            text=f"Current tickets:\n{ticket_list}"
+        )]</code></pre>
+
+                    <h4>Step 4: Run Your Server</h4>
+                    <p>Add the main entry point at the end of your file:</p>
+                    <pre><code>if __name__ == "__main__":
+    import asyncio
+    from mcp.server.stdio import stdio_server
+    
+    asyncio.run(stdio_server(app))</code></pre>
+                    <p>Now you can run your server with: <code>python server.py</code></p>
+
+                    <h3>Connecting to Claude Desktop</h3>
+                    <p>To make your server accessible to Claude Desktop, you need to register it in the MCP configuration file.</p>
+                    
+                    <h4>Step 1: Locate Your Config File</h4>
+                    <p>On macOS/Linux: <code>~/Library/Application Support/Claude/claude_desktop_config.json</code></p>
+                    <p>On Windows: <code>%APPDATA%\Claude\claude_desktop_config.json</code></p>
+
+                    <h4>Step 2: Add Your Server</h4>
+                    <pre><code>{
+  "mcpServers": {
+    "jira": {
+      "command": "python",
+      "args": ["/path/to/your/server.py"]
+    }
+  }
+}</code></pre>
+
+                    <h4>Step 3: Restart Claude Desktop</h4>
+                    <p>After saving the config, restart Claude Desktop. Your server will now be available, and you can ask Claude to create or list tickets.</p>
+
+                    <h3>Testing Your MCP Server</h3>
+                    <p>Once connected, try asking Claude:</p>
+                    <ul>
+                        <li>"Create a new ticket for implementing user authentication"</li>
+                        <li>"Show me all current tickets"</li>
+                        <li>"Create a high-priority ticket for fixing the login bug"</li>
+                    </ul>
+                    <p>Claude will automatically discover your tools and use them to fulfill your requests.</p>
+
+                    <h3>Advanced Features</h3>
+                    <h4>Persistent Storage</h4>
+                    <p>The example above uses in-memory storage. For production use, you'd want to persist tickets to a database or file:</p>
+                    <pre><code>import json
+
+def load_tickets():
+    try:
+        with open("tickets.json", "r") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return {}
+
+def save_tickets():
+    with open("tickets.json", "w") as f:
+        json.dump(TICKETS, f, indent=2)
+
+# Call save_tickets() after each modification</code></pre>
+
+                    <h4>Error Handling</h4>
+                    <p>Add proper error handling to make your server more robust:</p>
+                    <pre><code>@app.call_tool()
+async def call_tool(name: str, arguments: dict) -> list[TextContent]:
+    try:
+        if name == "create_ticket":
+            if not arguments.get("title"):
+                raise ValueError("Title is required")
+            # ... rest of implementation
+    except Exception as e:
+        return [TextContent(
+            type="text",
+            text=f"Error: {str(e)}"
+        )]</code></pre>
+
+                    <h4>Adding Resources</h4>
+                    <p>You can also expose data as resources that Claude can read:</p>
+                    <pre><code>@app.list_resources()
+async def list_resources():
+    return [
+        Resource(
+            uri="jira://tickets/all",
+            name="All Tickets",
+            mimeType="application/json"
+        )
+    ]
+
+@app.read_resource()
+async def read_resource(uri: str) -> str:
+    if uri == "jira://tickets/all":
+        return json.dumps(TICKETS, indent=2)
+    raise ValueError(f"Unknown resource: {uri}")</code></pre>
+
+                    <h3>Real-World Example: Multi-Tool Server</h3>
+                    <p>In practice, you might build a server that combines multiple capabilities. Here's a more complete example that includes GitHub integration:</p>
+                    <pre><code>from mcp.server import Server
+from mcp.types import Tool, TextContent
+import subprocess
+
+app = Server("development-tools")
+
+@app.list_tools()
+async def list_tools() -> list[Tool]:
+    return [
+        Tool(
+            name="create_ticket",
+            description="Create a Jira ticket",
+            inputSchema={...}
+        ),
+        Tool(
+            name="create_branch",
+            description="Create a git branch",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "branch_name": {"type": "string"},
+                    "repo_path": {"type": "string"}
+                },
+                "required": ["branch_name", "repo_path"]
+            }
+        )
+    ]
+
+@app.call_tool()
+async def call_tool(name: str, arguments: dict):
+    if name == "create_branch":
+        result = subprocess.run(
+            ["git", "checkout", "-b", arguments["branch_name"]],
+            cwd=arguments["repo_path"],
+            capture_output=True
+        )
+        return [TextContent(
+            type="text",
+            text=f"Created branch: {result.stdout.decode()}"
+        )]
+    # ... handle other tools</code></pre>
+
+                    <h3>Security Considerations</h3>
+                    <p>When building MCP servers, keep these security principles in mind:</p>
+                    <ul>
+                        <li><strong>Validate all inputs</strong>: Never trust data from the client</li>
+                        <li><strong>Limit file system access</strong>: Only allow operations in approved directories</li>
+                        <li><strong>Use environment variables</strong>: Store sensitive credentials outside your code</li>
+                        <li><strong>Implement rate limiting</strong>: Prevent abuse of resource-intensive operations</li>
+                        <li><strong>Log all operations</strong>: Maintain an audit trail for security reviews</li>
+                    </ul>
+
+                    <h3>Debugging Tips</h3>
+                    <p>When things don't work as expected:</p>
+                    <ul>
+                        <li>Check Claude Desktop logs: <code>~/Library/Logs/Claude/mcp.log</code> (macOS)</li>
+                        <li>Add logging to your server: <code>import logging; logging.basicConfig(level=logging.DEBUG)</code></li>
+                        <li>Test your server independently using the MCP inspector tool</li>
+                        <li>Verify your config file syntax with a JSON validator</li>
+                    </ul>
+
+                    <h3>Going Further</h3>
+                    <p>Now that you have a basic MCP server running, consider these next steps:</p>
+                    <ul>
+                        <li>Integrate with real APIs (Jira, GitHub, Slack)</li>
+                        <li>Add authentication and authorization</li>
+                        <li>Build servers for your company's internal tools</li>
+                        <li>Explore the <a href="https://github.com/anthropics/mcp" target="_blank" rel="noopener noreferrer">official MCP examples repository</a></li>
+                        <li>Join the MCP community to share your servers</li>
+                    </ul>
+
+                    <h3>Takeaways</h3>
+                    <ul>
+                        <li>MCP provides a standardized way to connect AI assistants to external tools and data</li>
+                        <li>Building an MCP server is straightforward with the official SDK</li>
+                        <li>Servers can expose tools (actions) and resources (data) that AI assistants can use</li>
+                        <li>Proper error handling and security measures are essential for production use</li>
+                        <li>The real power comes from combining multiple tools in a single server</li>
+                    </ul>
+
+                    <h3>Resources</h3>
+                    <ul>
+                        <li><a href="https://modelcontextprotocol.io" target="_blank" rel="noopener noreferrer">Official MCP Documentation</a></li>
+                        <li><a href="https://github.com/anthropics/mcp" target="_blank" rel="noopener noreferrer">MCP GitHub Repository</a></li>
+                        <li><a href="https://github.com/anthropics/mcp/tree/main/examples" target="_blank" rel="noopener noreferrer">MCP Example Servers</a></li>
+                    </ul>
+                </div>
+                <a class="blog-article__back" href="../index.html">
+                    <span aria-hidden="true">←</span>
+                    <span>Back to the homepage</span>
+                </a>
+            </article>
+        </section>
+    </main>
+</body>
+</html>

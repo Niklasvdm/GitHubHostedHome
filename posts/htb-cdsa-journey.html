@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Conquering the HTB CDSA: A Journey Through Defensive Security</title>
+  <link rel="icon" type="image/png" href="../assets/Logo.png">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script src="../js/script.js" defer></script>
+</head>
+<body>
+    <div id="header">
+        <div id="title-div">
+            <div id="title">Niklas Van der Mersch</div>
+        </div>
+    </div>
+
+    <main>
+        <section id="blog-post">
+            <h2 class="section-title">Conquering the HTB CDSA: A Journey Through Defensive Security</h2>
+            <article class="content-box blog-article" data-order="1">
+                <a class="blog-article__back blog-article__back--top" href="../index.html">
+                    <span aria-hidden="true">←</span>
+                    <span>Back to the homepage</span>
+                </a>
+                <div class="blog-article__meta">
+                    <span>December, 2024</span>
+                    <span>~8 minute read</span>
+                    <span>Tags: htb, cdsa, certification, blue-team, incident-response</span>
+                </div>
+                <div class="markdown-body">
+                    <h3>The Decision to Pursue CDSA</h3>
+                    <p>After spending most of my cybersecurity journey on the offensive side—pentesting, red teaming, breaking things—I realized I needed to understand the other side of the battlefield. How do defenders actually <i>catch</i> us? What logs do they look at? How do they piece together the puzzle of an attack?</p>
+                    
+                    <p>That curiosity led me to Hack The Box's <b>Certified Defensive Security Analyst (CDSA)</b> certification. Unlike traditional Blue Team certs that focus heavily on theory, CDSA promised something I craved: <b>hands-on incident response in realistic scenarios</b>.</p>
+
+                    <h3>Preparation: Building the Toolkit</h3>
+                    <p>The HTB Academy modules for CDSA are genuinely well-structured. They walk you through everything from Windows event log forensics to building detection rules in SIEM platforms. But here's the thing—just reading through modules doesn't prepare you for the exam. You need to <i>do</i>.</p>
+
+                    <h4>What Actually Helped</h4>
+                    <p>Looking back, these were the game-changers in my prep:</p>
+                    <ul>
+                        <li><b>Building a personal lab</b> – I set up my own Elastic Stack and Splunk instances (shoutout to my ProxMox homelab from <a href="InstallProxmox.html">my previous post</a>). There's no substitute for generating your own logs, simulating attacks, and hunting through the noise.</li>
+                        <li><b>Query development muscle memory</b> – Whether it's KQL in Elastic or SPL in Splunk, you need to be <i>fast</i>. I spent hours just writing queries until common patterns (process creation, network connections, registry modifications) became second nature.</li>
+                        <li><b>Understanding attacker TTPs</b> – My red team background actually helped here. Knowing <i>how</i> lateral movement works, how malware establishes persistence, or how Kerberoasting operates makes finding evidence so much easier.</li>
+                        <li><b>Working with real malware samples</b> – The modules provide some, but I also grabbed samples from malware bazaars (safely, in VMs). Analyzing obfuscated PowerShell, decoding Base64 payloads, understanding XOR encryption—these became critical skills.</li>
+                    </ul>
+
+                    <p>One lesson I learned the hard way: <b>start documenting immediately</b>. During practice scenarios, I'd find critical evidence and think "I'll remember this." Spoiler: I didn't. Use a reporting tool like <a href="https://github.com/Syslifters/sysreptor" target="_blank" rel="noopener noreferrer">SysReptor</a> or even just Obsidian with good templates. Future you will be grateful.</p>
+
+                    <h3>Exam Day: November 15th</h3>
+                    <p>The exam format is intense but fair. You're dropped into realistic incident scenarios with access to log sources (SIEM, EDR telemetry, network captures, memory dumps) and need to answer specific questions about the attack chain.</p>
+
+                    <h4>The Mental Game</h4>
+                    <p>Here's what nobody tells you about forensics exams: <b>imposter syndrome hits hard</b>. You'll find evidence, then doubt yourself. "Is this <i>really</i> the initial access vector? What if I missed something?" The temptation to second-guess everything is overwhelming.</p>
+
+                    <p>What helped me stay grounded:</p>
+                    <ul>
+                        <li><b>Follow the timestamps</b> – Build a timeline. Earliest evidence of compromise? Work forward from there.</li>
+                        <li><b>Trust your queries</b> – If your KQL returns 3 results and one is clearly malicious, don't spend an hour looking for more. Pivot and move on.</li>
+                        <li><b>Parent-child process trees are your friend</b> – Sysmon Event ID 1 (ProcessCreate) chaining is how you map out execution flows. Draw it out if needed.</li>
+                    </ul>
+
+                    <h4>Technical Highlights (High-Level)</h4>
+                    <p>I can't discuss specific exam scenarios (NDA and all that), but here are the skills that got the most workout:</p>
+
+                    <p><b>Log analysis mastery:</b> You need to be comfortable pivoting between different log sources. Found a suspicious PowerShell process? Check Security 4688 events, Sysmon Event ID 1, PowerShell Operational logs (4104), and network connections (Sysmon Event ID 3). Each tells part of the story.</p>
+
+                    <p><b>Malware analysis basics:</b> You don't need to be a malware reverse engineer, but you should recognize common obfuscation techniques. Base64-encoded commands, XOR decryption loops, GZIP compression—these patterns repeat. Tools like CyberChef become essential.</p>
+
+                    <p><b>Understanding persistence mechanisms:</b> Scheduled tasks, registry run keys, service creation (Event ID 7045), WMI event consumers—attackers need to maintain access. Finding how they did it is often the key to understanding the full scope.</p>
+
+                    <p><b>Lateral movement tracking:</b> Following an attacker as they move from system to system requires correlating authentication events (4624/4625), network connections, and remote execution artifacts (PSExec, WMI, RDP). It's like connecting dots, but the dots are scattered across multiple machines.</p>
+
+                    <h3>The Waiting Game</h3>
+                    <p>After submitting, you wait. And wait. HTB takes their time with grading (rightfully so—these are complex scenarios). For me, it was exactly one month: exam on November 15th, results on December 17th.</p>
+
+                    <p>That month was strange. I'd replay scenarios in my head: "Did I get that hash format right? Should I have dug deeper into that Event ID 10 log?" But ultimately, you have to trust your work and move on.</p>
+
+                    <h3>December 17th: Success</h3>
+                    <p>When the pass notification came through, it felt surreal. Not because I doubted my skills, but because this cert represented something different for me—a shift from "how do I break in?" to "how do I catch people breaking in?"</p>
+
+                    <h4>What This Cert Actually Validates</h4>
+                    <p>Let's be real: a certification doesn't make you an expert. But CDSA does validate that you can:</p>
+                    <ul>
+                        <li>Navigate complex log datasets and find needles in haystacks</li>
+                        <li>Reconstruct attack timelines from forensic artifacts</li>
+                        <li>Identify malicious activity in the context of normal system operations</li>
+                        <li>Work under pressure to answer specific investigative questions</li>
+                        <li>Document findings in a clear, defensible way</li>
+                    </ul>
+
+                    <p>More importantly (for me), it forced me to build a defensive mindset. When I'm on a red team engagement now, I think about the logs I'm generating, the artifacts I'm leaving behind, the queries that might catch me. That perspective makes me both a better attacker <i>and</i> a better defender.</p>
+
+                    <h3>Advice for Future CDSA Candidates</h3>
+                    
+                    <h4>During Preparation</h4>
+                    <ul>
+                        <li><b>Don't just read—do.</b> Every concept in the modules should be practiced in your own lab.</li>
+                        <li><b>Master your SIEM of choice.</b> Whether it's Elastic, Splunk, or something else, you need to be fast and accurate with queries.</li>
+                        <li><b>Learn common attack patterns.</b> MITRE ATT&CK is your bible. Understand the TTPs that show up repeatedly (T1059 for command execution, T1053 for scheduled tasks, T1003 for credential dumping, etc.).</li>
+                        <li><b>Practice malware analysis basics.</b> Use tools like <code>base64 -d</code>, PowerShell's <code>[Convert]::FromBase64String()</code>, and CyberChef. You'll encounter encoded payloads—get comfortable decoding them quickly.</li>
+                        <li><b>Build templates early.</b> Have a reporting structure ready before exam day. You don't want to spend mental energy on formatting when you should be analyzing.</li>
+                    </ul>
+
+                    <h4>During the Exam</h4>
+                    <ul>
+                        <li><b>Start with a timeline.</b> Find the earliest evidence and work forward chronologically.</li>
+                        <li><b>Trust your queries but verify your findings.</b> If something looks suspicious, check multiple log sources to confirm.</li>
+                        <li><b>Don't go down rabbit holes.</b> It's easy to spend hours on one interesting artifact. Stay focused on answering the specific questions.</li>
+                        <li><b>Use process trees.</b> Draw out parent-child relationships for processes. It clarifies the execution flow.</li>
+                        <li><b>Take breaks.</b> Seriously. Step away from the screen. Your brain needs rest to spot patterns.</li>
+                    </ul>
+
+                    <h4>Tools That Proved Invaluable</h4>
+                    <p>Here's my personal toolkit that got heavy use:</p>
+                    <ul>
+                        <li><b>Elastic/Kibana or Splunk</b> – Whichever SIEM you're comfortable with. Learn it deeply.</li>
+                        <li><b>CyberChef</b> – For quick decoding, deobfuscation, and data manipulation.</li>
+                        <li><b>PowerShell</b> – Both for analyzing PowerShell-based attacks and for writing your own analysis scripts.</li>
+                        <li><b>Sysmon</b> – Understanding Sysmon events is non-negotiable. Event IDs 1, 3, 7, 8, 10, 11, 13 become your best friends.</li>
+                        <li><b>SysReptor or similar</b> – For structured reporting. Don't underestimate the value of good documentation.</li>
+                        <li><b>Obsidian</b> – My second brain. All my notes, queries, and TTP documentation lived here during prep.</li>
+                    </ul>
+
+                    <h3>The Bigger Picture: Why Defensive Security Matters</h3>
+                    <p>This journey taught me something that sounds obvious but isn't always appreciated in the field: <b>defense is harder than offense</b>.</p>
+
+                    <p>As an attacker, I need one way in. One misconfiguration, one unpatched vulnerability, one clicked phishing link. Defenders need to get everything right, all the time, and then be ready to detect and respond when (not if) something slips through.</p>
+
+                    <p>The CDSA pushed me to develop an appreciation for the blue team grind—sifting through millions of events to find the handful that matter, building detection rules that catch real threats without drowning teams in false positives, reconstructing what happened after the damage is done.</p>
+
+                    <h3>What's Next</h3>
+                    <p>This cert isn't an end point—it's a foundation. I'm continuing to build out my defensive skills: learning more about threat hunting, diving deeper into memory forensics, and exploring detection engineering. The plan is to keep one foot in offense and one in defense, using each perspective to strengthen the other.</p>
+
+                    <p>I'm also working on open-sourcing some of my detection rules and query libraries. If you're interested in defensive security tooling, stay tuned to my <a href="https://github.com/niklasvdm" target="_blank" rel="noopener noreferrer">GitHub</a>.</p>
+
+                    <h3>Final Thoughts</h3>
+                    <p>The HTB CDSA is a legitimate challenge that tests practical skills under pressure. If you're considering it, my advice is simple: <b>put in the lab time</b>. Theory is necessary but insufficient. You need muscle memory with your tools, pattern recognition with attack TTPs, and the confidence to trust your analysis.</p>
+
+                    <p>For me, passing wasn't just about adding letters after my name. It was about proving to myself that I could shift perspectives, think like a defender, and help organizations catch the bad guys. In a field where most people specialize in one side or the other, I'm glad to be building skills across the spectrum.</p>
+
+                    <p>To anyone on this journey: good luck, trust your process, and remember—every query teaches you something. Happy hunting (from the defender's chair this time). 🔍</p>
+
+                    <h4>Takeaways</h4>
+                    <ul>
+                        <li>Hands-on lab work is non-negotiable—reading modules isn't enough</li>
+                        <li>Query speed and accuracy in your SIEM of choice is critical for exam success</li>
+                        <li>Understanding attacker TTPs makes finding defensive evidence much easier</li>
+                        <li>Documentation from the start saves you hours of frustration later</li>
+                        <li>Defense is genuinely harder than offense—respect to all the blue teamers out there</li>
+                        <li>The cert validates practical incident response skills, not just theoretical knowledge</li>
+                    </ul>
+                </div>
+                <a class="blog-article__back" href="../index.html">
+                    <span aria-hidden="true">←</span>
+                    <span>Back to the homepage</span>
+                </a>
+            </article>
+        </section>
+    </main>
+</body>
+</html>

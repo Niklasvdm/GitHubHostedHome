@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Building with MCP: From Setup to Production Jira Integration</title>
+  <link rel="icon" type="image/png" href="../assets/Logo.png">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script src="../js/script.js" defer></script>
+</head>
+<body>
+    <div id="header">
+        <div id="title-div">
+            <div id="title">Niklas Van der Mersch</div>
+        </div>
+    </div>
+
+    <main>
+        <section id="blog-post">
+            <h2 class="section-title">Building with MCP: From Setup to Production Jira Integration</h2>
+            <article class="content-box blog-article" data-order="1">
+                <a class="blog-article__back blog-article__back--top" href="../index.html">
+                    <span aria-hidden="true">&larr;</span>
+                    <span>Back to the homepage</span>
+                </a>
+                <div class="blog-article__meta">
+                    <span>January, 2026</span>
+                    <span>~12 minute read</span>
+                    <span>Tags: mcp, ai, automation, jira, claude, python, tutorial</span>
+                </div>
+                <div class="markdown-body">
+                    <h3>What is MCP and why should you care?</h3>
+                    <p>The <b>Model Context Protocol (MCP)</b> is Anthropic's open standard for connecting AI assistants to external data sources and tools. Think of it as a universal adapter that lets Claude (or any MCP-compatible AI) interact with your databases, APIs, filesystems, and services through a standardized interface.</p>
+
+                    <p>Instead of building custom integrations for every AI tool you want to use, MCP provides a consistent way to expose your data and functionality. You write an MCP server once, and any MCP-compatible client can use it.</p>
+
+                    <h4>Why this matters</h4>
+                    <ul>
+                        <li><b>Standardization:</b> No more reinventing the wheel for each AI integration</li>
+                        <li><b>Security:</b> Controlled access with explicit permissions and validation</li>
+                        <li><b>Composability:</b> Mix and match servers to build powerful workflows</li>
+                        <li><b>Future-proof:</b> Works with any MCP-compatible AI, not just Claude</li>
+                    </ul>
+
+                    <h3>Real-world use case: Jira ticket management</h3>
+                    <p>To demonstrate MCP's practical value, I built a Jira-style ticket management system that Claude can interact with naturally. This isn't just a toy example—it's the actual system I use to manage my projects, and the ticket tracking <i>this very blog post</i> was created using it.</p>
+
+                    <p>The meta-irony here is perfect: I asked Claude to create a Jira ticket about writing a blog post on MCP, and it used the MCP Jira server to do exactly that. The system ate its own dogfood before the recipe was even written.</p>
+
+                    <h3>Setting up your MCP environment</h3>
+
+                    <h4>Prerequisites</h4>
+                    <p>Before diving in, make sure you have:</p>
+                    <ul>
+                        <li><b>Python 3.10+</b> installed on your system</li>
+                        <li><b>Claude Desktop</b> or another MCP-compatible client</li>
+                        <li>Basic familiarity with Python and JSON</li>
+                        <li>A code editor (VS Code recommended for its MCP extensions)</li>
+                    </ul>
+
+                    <h4>Understanding the architecture</h4>
+                    <p>An MCP setup has three key components:</p>
+                    <ol>
+                        <li><b>MCP Server:</b> Your Python application that exposes tools and resources</li>
+                        <li><b>MCP Client:</b> The AI assistant (like Claude Desktop) that uses those tools</li>
+                        <li><b>Communication Layer:</b> Stdio transport that connects them</li>
+                    </ol>
+
+                    <h4>Step 1: Install the MCP SDK</h4>
+                    <p>First, create a new project directory and set up a virtual environment:</p>
+                    <pre><code>mkdir my-mcp-server
+cd my-mcp-server
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+pip install mcp</code></pre>
+
+                    <h4>Step 2: Create a basic MCP server</h4>
+                    <p>Let's start with a minimal server to understand the structure. Create a file called <code>server.py</code>:</p>
+                    <pre><code>from mcp.server import Server
+from mcp.server.stdio import stdio_server
+from mcp.types import Tool, TextContent
+import json
+
+# Initialize the server
+app = Server("demo-server")
+
+@app.list_tools()
+async def list_tools() -> list[Tool]:
+    """Define available tools"""
+    return [
+        Tool(
+            name="echo",
+            description="Echo back a message",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "description": "Message to echo"
+                    }
+                },
+                "required": ["message"]
+            }
+        )
+    ]
+
+@app.call_tool()
+async def call_tool(name: str, arguments: dict) -> list[TextContent]:
+    """Handle tool calls"""
+    if name == "echo":
+        message = arguments.get("message", "")
+        return [TextContent(
+            type="text",
+            text=f"Echo: {message}"
+        )]
+    raise ValueError(f"Unknown tool: {name}")
+
+async def main():
+    async with stdio_server() as (read_stream, write_stream):
+        await app.run(
+            read_stream,
+            write_stream,
+            app.create_initialization_options()
+        )
+
+if __name__ == "__main__":
+    import asyncio
+    asyncio.run(main())</code></pre>
+
+                    <h4>Step 3: Configure Claude Desktop</h4>
+                    <p>To connect your MCP server to Claude Desktop, you need to edit the configuration file. The location depends on your OS:</p>
+                    <ul>
+                        <li><b>macOS:</b> <code>~/Library/Application Support/Claude/claude_desktop_config.json</code></li>
+                        <li><b>Windows:</b> <code>%APPDATA%\Claude\claude_desktop_config.json</code></li>
+                        <li><b>Linux:</b> <code>~/.config/Claude/claude_desktop_config.json</code></li>
+                    </ul>
+
+                    <p>Add your server configuration:</p>
+                    <pre><code>{
+  "mcpServers": {
+    "demo-server": {
+      "command": "python",
+      "args": ["/full/path/to/your/server.py"],
+      "env": {}
+    }
+  }
+}</code></pre>
+
+                    <p><b>Important:</b> Use absolute paths, restart Claude Desktop after configuration changes, and check the logs if it doesn't work immediately.</p>
+
+                    <h4>Step 4: Test your server</h4>
+                    <p>Restart Claude Desktop and try asking: <i>"Can you echo 'Hello MCP!' using the demo server?"</i></p>
+                    <p>Claude should recognize your tool and use it to respond. If you see the echoed message, congratulations—your first MCP server is working!</p>
+
+                    <h3>Building the Jira MCP server</h3>
+                    <p>Now let's level up to something practical. The Jira server needs to handle ticket creation, updates, listing, and searching while maintaining data persistence.</p>
+
+                    <h4>Design considerations</h4>
+                    <p>Before writing code, I established some key principles:</p>
+                    <ul>
+                        <li><b>File-based storage:</b> JSON files for simplicity and portability</li>
+                        <li><b>Guidelines first:</b> An AI should read guidelines before creating tickets</li>
+                        <li><b>Validation:</b> Strict input validation to prevent bad data</li>
+                        <li><b>Auditability:</b> Timestamps and comment history for every change</li>
+                        <li><b>Conventions:</b> Strong typing and clear naming</li>
+                    </ul>
+
+                    <h4>The ticket data model</h4>
+                    <p>Each ticket is stored as a JSON file with this structure:</p>
+                    <pre><code>{
+  "id": "DOCS-002",
+  "ticket_type": "DOCS",
+  "title": "Write Blog Post on Setting Up MCP Environment",
+  "description": "Create comprehensive blog post...",
+  "state": "To Do",
+  "assignee": "",
+  "priority": "Medium",
+  "labels": ["blog-post", "documentation", "mcp"],
+  "acceptance_criteria": [
+    "MCP overview section is complete",
+    "Environment setup instructions are tested"
+  ],
+  "comments": [],
+  "created_at": "2026-01-28T20:29:01.773361+00:00",
+  "updated_at": "2026-01-28T20:29:01.773361+00:00"
+}</code></pre>
+
+                    <h4>Core server implementation</h4>
+                    <p>Here's the skeleton of the Jira MCP server (simplified for clarity):</p>
+                    <pre><code>from mcp.server import Server
+from mcp.types import Tool, TextContent
+from pathlib import Path
+from datetime import datetime
+import json
+
+app = Server("jira")
+TICKETS_DIR = Path("tickets")
+TICKETS_DIR.mkdir(exist_ok=True)
+
+@app.list_tools()
+async def list_tools() -> list[Tool]:
+    return [
+        Tool(
+            name="get_jira_guidelines",
+            description="Read Jira ticket guidelines",
+            inputSchema={"type": "object", "properties": {}}
+        ),
+        Tool(
+            name="create_ticket",
+            description="Create a new ticket",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "title": {"type": "string"},
+                    "description": {"type": "string"},
+                    "ticket_type": {
+                        "type": "string",
+                        "enum": ["ENHANCEMENT", "BUG", "DEV", "DOCS", "INFRA"]
+                    },
+                    "priority": {
+                        "type": "string",
+                        "enum": ["Low", "Medium", "High", "Critical"],
+                        "default": "Medium"
+                    },
+                    "acceptance_criteria": {
+                        "type": "array",
+                        "items": {"type": "string"}
+                    }
+                },
+                "required": ["title", "description", "ticket_type"]
+            }
+        ),
+        Tool(
+            name="list_tickets",
+            description="List all tickets with optional filters",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "state": {"type": "string"},
+                    "assignee": {"type": "string"}
+                }
+            }
+        ),
+        Tool(
+            name="get_ticket",
+            description="Get a single ticket by ID",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "ticket_id": {"type": "string"}
+                },
+                "required": ["ticket_id"]
+            }
+        ),
+        Tool(
+            name="update_ticket",
+            description="Update ticket fields or add comments",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "ticket_id": {"type": "string"},
+                    "state": {"type": "string"},
+                    "assignee": {"type": "string"},
+                    "comment": {"type": "string"}
+                },
+                "required": ["ticket_id"]
+            }
+        )
+    ]
+
+@app.call_tool()
+async def call_tool(name: str, arguments: dict) -> list[TextContent]:
+    if name == "get_jira_guidelines":
+        guidelines_path = Path("JIRA_GUIDELINES.md")
+        return [TextContent(
+            type="text",
+            text=guidelines_path.read_text()
+        )]
+    
+    elif name == "create_ticket":
+        ticket_type = arguments["ticket_type"]
+        next_num = get_next_ticket_number(ticket_type)
+        ticket_id = f"{ticket_type}-{next_num:03d}"
+        
+        ticket = {
+            "id": ticket_id,
+            "ticket_type": ticket_type,
+            "title": arguments["title"],
+            "description": arguments["description"],
+            "state": arguments.get("state", "To Do"),
+            "assignee": arguments.get("assignee", ""),
+            "priority": arguments.get("priority", "Medium"),
+            "labels": arguments.get("labels", []),
+            "acceptance_criteria": arguments.get("acceptance_criteria", []),
+            "comments": [],
+            "created_at": datetime.utcnow().isoformat() + "+00:00",
+            "updated_at": datetime.utcnow().isoformat() + "+00:00"
+        }
+        
+        ticket_path = TICKETS_DIR / f"{ticket_id}.json"
+        ticket_path.write_text(json.dumps(ticket, indent=2))
+        
+        return [TextContent(
+            type="text",
+            text=f"Created ticket {ticket_id}"
+        )]
+    
+    elif name == "list_tickets":
+        tickets = []
+        for ticket_file in TICKETS_DIR.glob("*.json"):
+            ticket = json.loads(ticket_file.read_text())
+            
+            # Apply filters
+            if arguments.get("state") and ticket["state"] != arguments["state"]:
+                continue
+            if arguments.get("assignee") and ticket["assignee"] != arguments["assignee"]:
+                continue
+            
+            tickets.append(ticket)
+        
+        return [TextContent(
+            type="text",
+            text=json.dumps(tickets, indent=2)
+        )]
+    
+    # ... implement get_ticket and update_ticket similarly
+    
+    raise ValueError(f"Unknown tool: {name}")
+
+def get_next_ticket_number(ticket_type: str) -> int:
+    """Find the next available ticket number for a given type"""
+    existing = list(TICKETS_DIR.glob(f"{ticket_type}-*.json"))
+    if not existing:
+        return 1
+    
+    numbers = [
+        int(f.stem.split("-")[1]) 
+        for f in existing
+    ]
+    return max(numbers) + 1</code></pre>
+
+                    <h3>Key implementation insights</h3>
+
+                    <h4>1. Guidelines as a resource</h4>
+                    <p>One of the most important design decisions was making the guidelines a first-class tool. Before Claude creates any ticket, it reads <code>JIRA_GUIDELINES.md</code> to understand the naming conventions, required fields, and acceptance criteria format.</p>
+                    <p>This pattern is incredibly powerful—you're teaching the AI your team's conventions through documentation, not through prompt engineering.</p>
+
+                    <h4>2. Strong typing with Pydantic</h4>
+                    <p>The actual implementation uses Pydantic models for validation:</p>
+                    <pre><code>from pydantic import BaseModel, Field
+from typing import Optional
+from datetime import datetime
+
+class Comment(BaseModel):
+    author: str
+    timestamp: datetime
+    text: str
+
+class Ticket(BaseModel):
+    id: str
+    ticket_type: str
+    title: str
+    description: str
+    state: str = "To Do"
+    assignee: str = ""
+    priority: str = "Medium"
+    labels: list[str] = Field(default_factory=list)
+    acceptance_criteria: list[str] = Field(default_factory=list)
+    comments: list[Comment] = Field(default_factory=list)
+    created_at: datetime
+    updated_at: datetime</code></pre>
+                    <p>This ensures data integrity and makes the code self-documenting.</p>
+
+                    <h4>3. Atomic file operations</h4>
+                    <p>For production use, I implemented atomic writes to prevent corruption:</p>
+                    <pre><code>import tempfile
+import os
+
+def atomic_write(path: Path, content: str):
+    """Write file atomically to prevent corruption"""
+    fd, temp_path = tempfile.mkstemp(dir=path.parent)
+    try:
+        with os.fdopen(fd, 'w') as f:
+            f.write(content)
+        os.replace(temp_path, path)
+    except:
+        os.unlink(temp_path)
+        raise</code></pre>
+
+                    <h4>4. Error handling and validation</h4>
+                    <p>The server validates everything before making changes:</p>
+                    <ul>
+                        <li>Ticket IDs must match the expected format</li>
+                        <li>State transitions follow the workflow (To Do → In Progress → Review → Done)</li>
+                        <li>Required fields are enforced</li>
+                        <li>File operations are wrapped in try-catch blocks</li>
+                    </ul>
+
+                    <h3>Using the Jira MCP server</h3>
+
+                    <h4>Natural language interaction</h4>
+                    <p>Once configured, interacting with the system feels natural. Here's how I created the ticket for this blog post:</p>
+                    <blockquote>
+                        <p><b>Me:</b> I would like you to help me create a Jira ticket! Please read the necessary context about my specific Jira setup, then make a ticket about writing a blog post on setting up an MCP environment.</p>
+                        <p><b>Claude:</b> [reads guidelines] I've created ticket DOCS-002 with the title "Write Blog Post on Setting Up MCP Environment". It includes 7 acceptance criteria covering MCP overview, setup instructions, implementation examples, and best practices.</p>
+                    </blockquote>
+
+                    <h4>Ticket management workflows</h4>
+                    <p>The server supports common workflows:</p>
+                    <pre><code># List all active tickets
+"Show me all tickets in progress"
+
+# Update ticket status
+"Move DOCS-002 to In Progress and assign it to me"
+
+# Add a comment
+"Add a comment to DOCS-002: Started writing the MCP overview section"
+
+# Filter by criteria
+"Show me all high-priority bugs"</code></pre>
+
+                    <h3>Extending the pattern to GitHub</h3>
+                    <p>The same architectural principles apply to other integrations. I also built a GitHub repository MCP server that:</p>
+                    <ul>
+                        <li>Lists allowlisted repositories</li>
+                        <li>Syncs/clones repos</li>
+                        <li>Creates and manages branches (with main branch protection)</li>
+                        <li>Reads and writes files</li>
+                        <li>Creates pull requests</li>
+                    </ul>
+                    <p>The key insight: <b>never let the AI touch main directly</b>. All changes go through feature branches and PRs.</p>
+
+                    <h3>Best practices and lessons learned</h3>
+
+                    <h4>Security considerations</h4>
+                    <ul>
+                        <li><b>Explicit allowlists:</b> Only approved repos and paths are accessible</li>
+                        <li><b>Validation everywhere:</b> Never trust inputs, even from AI</li>
+                        <li><b>No credentials in code:</b> Use environment variables and config files</li>
+                        <li><b>Read-only by default:</b> Write operations require explicit permissions</li>
+                        <li><b>Branch protection:</b> Prevent direct commits to main/production branches</li>
+                    </ul>
+
+                    <h4>Developer experience tips</h4>
+                    <ul>
+                        <li><b>Clear tool descriptions:</b> Help the AI understand when to use each tool</li>
+                        <li><b>Rich error messages:</b> Make debugging easier for both humans and AI</li>
+                        <li><b>Comprehensive logging:</b> Track every operation for auditing</li>
+                        <li><b>Documentation-driven:</b> Let guidelines shape behavior</li>
+                        <li><b>Test with real scenarios:</b> Use your own projects as testing ground</li>
+                    </ul>
+
+                    <h4>Common pitfalls to avoid</h4>
+                    <ul>
+                        <li><b>Overly complex tools:</b> Keep each tool focused on one thing</li>
+                        <li><b>Weak validation:</b> Validate both structure and business logic</li>
+                        <li><b>Poor error handling:</b> Return helpful messages, not stack traces</li>
+                        <li><b>No guidelines:</b> The AI needs context about your conventions</li>
+                        <li><b>Absolute paths in config:</b> Use environment variables for portability</li>
+                    </ul>
+
+                    <h3>Troubleshooting guide</h3>
+
+                    <h4>Server not appearing in Claude Desktop</h4>
+                    <ul>
+                        <li>Check the config file path is correct for your OS</li>
+                        <li>Verify JSON syntax (trailing commas will break it)</li>
+                        <li>Use absolute paths in the command and args</li>
+                        <li>Restart Claude Desktop after config changes</li>
+                        <li>Check the MCP logs: Help → View Logs in Claude Desktop</li>
+                    </ul>
+
+                    <h4>Tools not working as expected</h4>
+                    <ul>
+                        <li>Verify inputSchema matches what you're sending</li>
+                        <li>Check that required fields are truly required</li>
+                        <li>Add logging to see what arguments are received</li>
+                        <li>Test the tool in isolation with a simple script</li>
+                    </ul>
+
+                    <h4>Python environment issues</h4>
+                    <ul>
+                        <li>Make sure you're using Python 3.10 or later</li>
+                        <li>Activate the virtual environment before running</li>
+                        <li>Install all dependencies in the venv: <code>pip install -r requirements.txt</code></li>
+                        <li>Check that the Python path in the config points to the venv</li>
+                    </ul>
+
+                    <h3>What's next?</h3>
+
+                    <h4>Scaling the approach</h4>
+                    <p>This ticket system started as a single-user tool but could easily scale:</p>
+                    <ul>
+                        <li><b>Multi-user support:</b> Add authentication and user roles</li>
+                        <li><b>Database backend:</b> Replace JSON files with PostgreSQL/SQLite</li>
+                        <li><b>Real Jira integration:</b> Sync with actual Jira via their API</li>
+                        <li><b>Webhooks:</b> Trigger actions on ticket changes</li>
+                        <li><b>Team workflows:</b> Add approval processes and notifications</li>
+                    </ul>
+
+                    <h4>Other MCP server ideas</h4>
+                    <p>The pattern is incredibly versatile. Some servers I'm considering:</p>
+                    <ul>
+                        <li><b>Calendar management:</b> Schedule meetings and check availability</li>
+                        <li><b>Email integration:</b> Send, search, and categorize emails</li>
+                        <li><b>Database queries:</b> Safe read-only access to production data</li>
+                        <li><b>Documentation search:</b> Index and search internal wikis</li>
+                        <li><b>Deployment automation:</b> Trigger builds and deployments</li>
+                    </ul>
+
+                    <h3>The meta moment</h3>
+                    <p>As I write this conclusion, I'm struck by the elegance of what just happened. I asked Claude to create a Jira ticket about writing this blog post, and it used the exact system I'm describing here. Then, using the GitHub MCP server, it's helping me create this content and submit it as a pull request.</p>
+
+                    <p>The system is eating its own dogfood in real-time, and it's working beautifully. That's the power of MCP—once you've built the infrastructure, the AI can help extend it, document it, and use it productively.</p>
+
+                    <h3>Resources and next steps</h3>
+
+                    <h4>Official documentation</h4>
+                    <ul>
+                        <li><a href="https://modelcontextprotocol.io/" target="_blank" rel="noopener noreferrer">MCP Specification</a> - The official protocol documentation</li>
+                        <li><a href="https://github.com/modelcontextprotocol/python-sdk" target="_blank" rel="noopener noreferrer">Python SDK</a> - Official Python implementation</li>
+                        <li><a href="https://docs.claude.ai/docs/use-mcp" target="_blank" rel="noopener noreferrer">Claude MCP Guide</a> - Integration with Claude Desktop</li>
+                    </ul>
+
+                    <h4>Code examples</h4>
+                    <p>The complete source code for both the Jira and GitHub MCP servers is available in my repositories. Feel free to use them as a starting point for your own servers.</p>
+
+                    <h4>Get started today</h4>
+                    <p>The barrier to entry is lower than you think. Pick a tool you use daily—maybe your task manager, your note-taking app, or your deployment system—and build an MCP server for it. Start small with one or two tools, test it in real workflows, and iterate based on what feels natural.</p>
+
+                    <p>The future of AI assistance isn't about replacing developers—it's about giving us better tools to express intent and automate the tedious parts. MCP is a powerful step in that direction.</p>
+
+                    <h3>Acknowledgments</h3>
+                    <p>Thanks to Anthropic for creating both Claude and the MCP protocol, and for making it open source. Thanks to the MCP community for early examples and debugging help. And thanks to you for reading this far—I hope you build something interesting with MCP.</p>
+
+                    <p>Now, if you'll excuse me, I need to update DOCS-002 to mark this blog post as complete. Fortunately, I can just ask Claude to do that for me.</p>
+                </div>
+                <a class="blog-article__back" href="../index.html">
+                    <span aria-hidden="true">&larr;</span>
+                    <span>Back to the homepage</span>
+                </a>
+            </article>
+        </section>
+    </main>
+</body>
+</html>

@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Setting Up an MCP Environment: Building AI-Powered Tools with Model Context Protocol</title>
+  <link rel="icon" type="image/png" href="../assets/Logo.png">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script src="../js/script.js" defer></script>
+</head>
+<body>
+    <div id="header">
+        <div id="title-div">
+            <div id="title">Niklas Van der Mersch</div>
+        </div>
+    </div>
+
+    <main>
+        <section id="blog-post">
+            <h2 class="section-title">Setting Up an MCP Environment: Building AI-Powered Tools with Model Context Protocol</h2>
+            <article class="content-box blog-article" data-order="1">
+                <a class="blog-article__back blog-article__back--top" href="../index.html">
+                    <span aria-hidden="true">&larr;</span>
+                    <span>Back to the homepage</span>
+                </a>
+                <div class="blog-article__meta">
+                    <span>January, 2026</span>
+                    <span>~12 minute read</span>
+                    <span>Tags: mcp, ai, llm, anthropic, automation, python, development</span>
+                </div>
+                <div class="markdown-body">
+                    <h3>What is MCP and why should you care?</h3>
+                    <p>The <b>Model Context Protocol (MCP)</b> is an open standard developed by Anthropic that enables AI assistants like Claude to securely connect to external data sources and tools. Think of it as a universal adapter that lets language models interact with your local files, databases, APIs, and services without requiring custom integrations for each use case.</p>
+
+                    <p>Before MCP, if you wanted Claude to interact with your Jira tickets, GitHub repos, or local databases, you'd need to build custom solutions, copy-paste data back and forth, or rely on limited built-in integrations. MCP changes that by providing a standardized way for AI models to connect to your tools while maintaining security and context isolation.</p>
+
+                    <h4>Real-world example: Jira ticket management</h4>
+                    <p>To illustrate MCP's power, I built a Jira ticket management system that demonstrates how MCP turns Claude into a project management assistant. Instead of manually creating tickets, tracking status, or searching through issues, you can simply ask Claude to handle it—and Claude can read your specific Jira guidelines, create properly formatted tickets, update statuses, and search across your entire ticket database.</p>
+
+                    <h3>MCP architecture: how it works</h3>
+                    <p>MCP operates on a client-server architecture where the AI model (the client) communicates with MCP servers that provide access to specific resources or capabilities.</p>
+
+                    <h4>The three core components</h4>
+                    <ul>
+                        <li><b>MCP Hosts:</b> Applications that want to use AI capabilities (like Claude Desktop, IDEs, or custom apps)</li>
+                        <li><b>MCP Clients:</b> The protocol implementation that maintains connections to servers</li>
+                        <li><b>MCP Servers:</b> Lightweight programs that expose specific capabilities (tools, resources, prompts) through the standardized MCP protocol</li>
+                    </ul>
+
+                    <p>When you ask Claude to create a Jira ticket, here's what happens behind the scenes:</p>
+                    <ol>
+                        <li>Claude (the MCP client) receives your request</li>
+                        <li>It identifies that Jira operations require the Jira MCP server</li>
+                        <li>The MCP client sends a standardized request to the Jira server</li>
+                        <li>The server executes the action (creating a ticket) and returns the result</li>
+                        <li>Claude receives the response and presents it to you in natural language</li>
+                    </ol>
+
+                    <h3>Prerequisites and setup requirements</h3>
+                    <p>Before diving into building your own MCP server, you'll need a few things in place. The good news is that the barrier to entry is relatively low—if you're comfortable with Python and command-line tools, you're ready to start.</p>
+
+                    <h4>Required software</h4>
+                    <ul>
+                        <li><b>Python 3.10+</b> for building MCP servers</li>
+                        <li><b>Claude Desktop</b> (or another MCP-compatible client) for testing</li>
+                        <li><b>Git</b> for version control and accessing example repositories</li>
+                        <li><b>A code editor</b> like VS Code or PyCharm</li>
+                    </ul>
+
+                    <h4>Helpful background knowledge</h4>
+                    <ul>
+                        <li>Basic Python programming (functions, classes, async/await)</li>
+                        <li>Familiarity with JSON for configuration</li>
+                        <li>Understanding of APIs and client-server communication</li>
+                        <li>Command-line comfort for running and debugging servers</li>
+                    </ul>
+
+                    <h3>Step-by-step environment configuration</h3>
+                    <p>Let's walk through setting up a complete MCP development environment using the official Anthropic quickstart and then build on it with a real-world example.</p>
+
+                    <h4>1. Install the MCP inspector</h4>
+                    <p>The MCP inspector is a debugging tool that lets you test your servers without needing a full client integration. It's invaluable during development.</p>
+
+                    <pre><code>npm install -g @modelcontextprotocol/inspector</code></pre>
+
+                    <h4>2. Clone the quickstart repository</h4>
+                    <p>Anthropic provides official quickstart templates for Python, TypeScript, and other languages. I'll focus on Python since that's what I used for my Jira server.</p>
+
+                    <pre><code>git clone https://github.com/modelcontextprotocol/quickstart-resources.git
+cd quickstart-resources/weather-server-python</code></pre>
+
+                    <h4>3. Set up a Python virtual environment</h4>
+                    <p>Always use virtual environments to avoid dependency conflicts. This keeps your MCP projects isolated from your system Python.</p>
+
+                    <pre><code>python -m venv venv
+# On Windows:
+venv\Scripts\activate
+# On Unix/MacOS:
+source venv/bin/activate</code></pre>
+
+                    <h4>4. Install dependencies</h4>
+                    <p>The quickstart includes a requirements.txt or uses the MCP Python SDK. Install everything you need:</p>
+
+                    <pre><code>pip install -e .</code></pre>
+
+                    <h4>5. Test the weather server</h4>
+                    <p>The quickstart includes a simple weather server that demonstrates MCP basics. Let's make sure it works:</p>
+
+                    <pre><code>mcp-inspector python -m weather</code></pre>
+
+                    <p>The inspector will open in your browser and show you available tools. Try calling <code>get_forecast</code> with latitude and longitude parameters to verify everything is working.</p>
+
+                    <h3>Building a real MCP server: Jira ticket management</h3>
+                    <p>Now that we have the basics working, let's look at a practical implementation. I built a Jira-style ticket management system that demonstrates several MCP patterns you'll use in real projects.</p>
+
+                    <h4>Project structure</h4>
+                    <pre><code>jira-server-python/
+├── src/
+│   └── jira/
+│       ├── __init__.py
+│       ├── server.py          # Main MCP server implementation
+│       ├── models.py           # Ticket data models
+│       └── storage.py          # JSON-based persistence
+├── data/
+│   ├── tickets/                # Individual ticket files
+│   └── jira_guidelines.md      # Guidelines for ticket creation
+├── pyproject.toml
+└── README.md</code></pre>
+
+                    <h4>Key implementation patterns</h4>
+
+                    <h5>1. Resources for contextual information</h5>
+                    <p>MCP resources provide read-only data that the AI can reference. In my Jira server, I exposed guidelines as a resource:</p>
+
+                    <pre><code>@server.list_resources()
+async def handle_list_resources() -> list[types.Resource]:
+    return [
+        types.Resource(
+            uri="jira://guidelines",
+            name="Jira Guidelines",
+            description="Guidelines for creating and managing tickets",
+            mimeType="text/markdown",
+        )
+    ]
+
+@server.read_resource()
+async def handle_read_resource(uri: AnyUrl) -> str:
+    if str(uri) == "jira://guidelines":
+        return read_guidelines_file()
+    raise ValueError(f"Unknown resource: {uri}")</code></pre>
+
+                    <p>This allows Claude to read my project-specific conventions before creating tickets, ensuring consistency with my existing workflow.</p>
+
+                    <h5>2. Tools for actions and operations</h5>
+                    <p>Tools are the core of MCP functionality. They let the AI perform actions on your behalf. Here's how I structured ticket creation:</p>
+
+                    <pre><code>@server.list_tools()
+async def handle_list_tools() -> list[types.Tool]:
+    return [
+        types.Tool(
+            name="create_ticket",
+            description="Create a new ticket",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "title": {"type": "string"},
+                    "description": {"type": "string"},
+                    "ticket_type": {"type": "string"},
+                    "priority": {"type": "string", "default": "Medium"},
+                    "state": {"type": "string", "default": "To Do"},
+                },
+                "required": ["title", "description", "ticket_type"]
+            }
+        )
+    ]
+
+@server.call_tool()
+async def handle_call_tool(
+    name: str, arguments: dict | None
+) -> list[types.TextContent | types.ImageContent | types.EmbeddedResource]:
+    if name == "create_ticket":
+        ticket = create_ticket_from_args(arguments)
+        save_ticket(ticket)
+        return [types.TextContent(
+            type="text",
+            text=f"Created ticket {ticket.id}"
+        )]</code></pre>
+
+                    <h5>3. File-based persistence</h5>
+                    <p>For this demo, I used JSON files for storage. Each ticket is saved as an individual file, making it easy to inspect and debug:</p>
+
+                    <pre><code>def save_ticket(ticket: Ticket):
+    ticket_file = DATA_DIR / "tickets" / f"{ticket.id}.json"
+    ticket_file.write_text(ticket.model_dump_json(indent=2))
+
+def load_ticket(ticket_id: str) -> Ticket:
+    ticket_file = DATA_DIR / "tickets" / f"{ticket_id}.json"
+    return Ticket.model_validate_json(ticket_file.read_text())</code></pre>
+
+                    <h4>Connecting your server to Claude Desktop</h4>
+                    <p>Once your server is working, you need to register it with Claude Desktop. Edit your Claude Desktop configuration file:</p>
+
+                    <pre><code># On MacOS: ~/Library/Application Support/Claude/claude_desktop_config.json
+# On Windows: %APPDATA%\Claude\claude_desktop_config.json
+
+{
+  "mcpServers": {
+    "jira": {
+      "command": "python",
+      "args": ["-m", "jira"],
+      "env": {},
+      "cwd": "/path/to/jira-server-python"
+    }
+  }
+}</code></pre>
+
+                    <p>Restart Claude Desktop, and your server will be available. You can verify by asking Claude: "What MCP servers are available?"</p>
+
+                    <h3>Practical use cases and demonstrations</h3>
+                    <p>With the Jira MCP server running, here are some real interactions you can have with Claude:</p>
+
+                    <h4>Creating tickets with natural language</h4>
+                    <p><b>You:</b> "I need to create a bug ticket for the login page not loading on mobile browsers. It's high priority."</p>
+                    <p><b>Claude:</b> First reads your Jira guidelines to understand ticket format, then creates:</p>
+                    <pre><code>BUG-003
+Title: Fix Mobile Login Page Loading Issue
+Priority: High
+State: To Do
+Description: Login page fails to load on mobile browsers, affecting user access...</code></pre>
+
+                    <h4>Searching and filtering tickets</h4>
+                    <p><b>You:</b> "Show me all high-priority bugs assigned to me."</p>
+                    <p><b>Claude:</b> Queries the ticket database and returns a filtered list with relevant details.</p>
+
+                    <h4>Updating ticket status</h4>
+                    <p><b>You:</b> "Move BUG-003 to In Progress and add a comment that I've started investigating."</p>
+                    <p><b>Claude:</b> Updates the ticket state and appends a timestamped comment.</p>
+
+                    <h4>Complex workflows</h4>
+                    <p><b>You:</b> "Create a documentation ticket for the MCP setup guide, reference ticket DEV-005, and set acceptance criteria based on the guidelines."</p>
+                    <p><b>Claude:</b> Reads guidelines, creates a properly formatted DOCS ticket with appropriate acceptance criteria and cross-references.</p>
+
+                    <h3>Common pitfalls and troubleshooting</h3>
+                    <p>Building MCP servers is straightforward, but here are issues I encountered and how to solve them:</p>
+
+                    <h4>Server not appearing in Claude Desktop</h4>
+                    <ul>
+                        <li><b>Check the config path:</b> Make sure you're editing the correct configuration file for your OS</li>
+                        <li><b>Verify the command:</b> Test your server command manually in the terminal first</li>
+                        <li><b>Restart Claude Desktop:</b> Configuration changes require a full restart</li>
+                        <li><b>Check logs:</b> Claude Desktop logs can show connection errors</li>
+                    </ul>
+
+                    <h4>Tool calls failing silently</h4>
+                    <ul>
+                        <li><b>Validate input schemas:</b> Make sure your JSON Schema definitions match your function signatures</li>
+                        <li><b>Add error handling:</b> Return informative error messages in TextContent responses</li>
+                        <li><b>Test with the inspector:</b> Use mcp-inspector to isolate server issues from client issues</li>
+                    </ul>
+
+                    <h4>Performance issues with large datasets</h4>
+                    <ul>
+                        <li><b>Implement pagination:</b> Don't return hundreds of results at once</li>
+                        <li><b>Add filtering:</b> Let the AI narrow down queries before fetching data</li>
+                        <li><b>Cache expensive operations:</b> Use Python's functools.lru_cache for repeated queries</li>
+                    </ul>
+
+                    <h4>Context window limitations</h4>
+                    <ul>
+                        <li><b>Keep resource content concise:</b> Don't expose entire documentation files as single resources</li>
+                        <li><b>Structure data efficiently:</b> Return only necessary fields in tool responses</li>
+                        <li><b>Chunk large content:</b> Split big resources into multiple smaller ones</li>
+                    </ul>
+
+                    <h3>Best practices and lessons learned</h3>
+                    <p>After building and using the Jira MCP server for several weeks, here are patterns that work well:</p>
+
+                    <h4>Design principles</h4>
+                    <ul>
+                        <li><b>Single responsibility:</b> Each MCP server should do one thing well (tickets, files, APIs, etc.)</li>
+                        <li><b>Explicit over implicit:</b> Clear tool names and descriptions help Claude choose the right operations</li>
+                        <li><b>Fail gracefully:</b> Return helpful error messages rather than crashing</li>
+                        <li><b>Document thoroughly:</b> Good tool descriptions and resource metadata make a huge difference</li>
+                    </ul>
+
+                    <h4>Security considerations</h4>
+                    <ul>
+                        <li><b>Validate all inputs:</b> Don't trust tool arguments without validation</li>
+                        <li><b>Limit file access:</b> Use explicit allowlists for paths and repositories</li>
+                        <li><b>Avoid sensitive data in logs:</b> Don't log API keys or personal information</li>
+                        <li><b>Use proper authentication:</b> For production servers, implement OAuth or token-based auth</li>
+                    </ul>
+
+                    <h4>Development workflow</h4>
+                    <ul>
+                        <li><b>Start with the inspector:</b> Test tools in isolation before connecting to Claude Desktop</li>
+                        <li><b>Version your schemas:</b> Track changes to tool definitions as your API evolves</li>
+                        <li><b>Keep data separate:</b> Don't mix code and data—use configuration files</li>
+                        <li><b>Write integration tests:</b> Automated tests catch regressions early</li>
+                    </ul>
+
+                    <h3>Extending the example: GitHub integration</h3>
+                    <p>Building on the Jira foundation, I added a GitHub MCP server that demonstrates a different pattern: working with external APIs and version control.</p>
+
+                    <h4>Key features</h4>
+                    <ul>
+                        <li><b>Repository allowlisting:</b> Explicitly configure which repos Claude can access</li>
+                        <li><b>Branch protection:</b> Prevent operations on main/master branches</li>
+                        <li><b>File operations:</b> Read, write, and commit files through natural language</li>
+                        <li><b>Pull request creation:</b> Automate PR workflows with context from Jira tickets</li>
+                    </ul>
+
+                    <h4>Combined workflow example</h4>
+                    <p><b>You:</b> "Read ticket DEV-012, create a feature branch for it, and scaffold the initial file structure based on the acceptance criteria."</p>
+
+                    <p>Claude then:</p>
+                    <ol>
+                        <li>Calls the Jira server to read ticket DEV-012</li>
+                        <li>Extracts requirements from acceptance criteria</li>
+                        <li>Calls the GitHub server to create a branch</li>
+                        <li>Creates initial files in the new branch</li>
+                        <li>Reports what was created and suggests next steps</li>
+                    </ol>
+
+                    <p>This cross-server coordination is where MCP really shines—Claude orchestrates multiple systems to accomplish complex workflows.</p>
+
+                    <h3>What's next: expanding your MCP ecosystem</h3>
+                    <p>Once you have one or two MCP servers working, the possibilities expand quickly. Here are some directions to explore:</p>
+
+                    <h4>Additional server ideas</h4>
+                    <ul>
+                        <li><b>Database connectors:</b> Query PostgreSQL, MongoDB, or SQLite databases</li>
+                        <li><b>API integrations:</b> Connect to Slack, Notion, Linear, or other tools you use daily</li>
+                        <li><b>Cloud services:</b> Interact with AWS, Azure, or GCP resources</li>
+                        <li><b>Local development:</b> Manage Docker containers, run tests, or deploy applications</li>
+                    </ul>
+
+                    <h4>Advanced patterns</h4>
+                    <ul>
+                        <li><b>Prompts:</b> Define reusable prompt templates your AI can invoke</li>
+                        <li><b>Sampling:</b> Let servers request AI completions for sub-tasks</li>
+                        <li><b>Server-side context:</b> Maintain conversation state across multiple interactions</li>
+                        <li><b>Dynamic tool discovery:</b> Generate tool definitions based on runtime configuration</li>
+                    </ul>
+
+                    <h4>Production considerations</h4>
+                    <ul>
+                        <li><b>Deployment:</b> Run MCP servers as system services or containerized applications</li>
+                        <li><b>Monitoring:</b> Add logging and metrics to track usage and errors</li>
+                        <li><b>Rate limiting:</b> Protect external APIs from excessive requests</li>
+                        <li><b>Multi-user support:</b> Handle authentication and data isolation for teams</li>
+                    </ul>
+
+                    <h3>Resources and further reading</h3>
+                    <ul>
+                        <li><b>Official MCP Documentation:</b> <a href="https://modelcontextprotocol.io" target="_blank" rel="noopener noreferrer">modelcontextprotocol.io</a></li>
+                        <li><b>MCP Specification:</b> <a href="https://spec.modelcontextprotocol.io" target="_blank" rel="noopener noreferrer">spec.modelcontextprotocol.io</a></li>
+                        <li><b>Python SDK:</b> <a href="https://github.com/modelcontextprotocol/python-sdk" target="_blank" rel="noopener noreferrer">github.com/modelcontextprotocol/python-sdk</a></li>
+                        <li><b>Example Servers:</b> <a href="https://github.com/modelcontextprotocol/servers" target="_blank" rel="noopener noreferrer">github.com/modelcontextprotocol/servers</a></li>
+                    </ul>
+
+                    <h3>Conclusion: MCP as a productivity multiplier</h3>
+                    <p>Building MCP servers fundamentally changes how you interact with AI assistants. Instead of treating Claude as a chatbot that requires manual copy-pasting of data, you can turn it into an automation partner that directly manipulates your tools and workflows.</p>
+
+                    <p>The Jira and GitHub servers I've built save me hours every week. I no longer context-switch to create tickets, search for information, or manage branches. I describe what I need in natural language, and Claude handles the implementation details while respecting my project conventions and guidelines.</p>
+
+                    <p>What makes MCP particularly powerful is its composability. Each server is a building block that can combine with others to create sophisticated workflows. Start with something simple—maybe a server that reads your project documentation or manages a specific API—and expand from there.</p>
+
+                    <p>The barrier to entry is low, but the potential is enormous. If you're comfortable with Python and willing to experiment, you can have your first MCP server running in under an hour. From there, it's just a matter of identifying which repetitive tasks in your workflow could benefit from AI augmentation.</p>
+
+                    <h4>Key takeaways</h4>
+                    <ul>
+                        <li>MCP standardizes how AI models connect to external tools and data</li>
+                        <li>The three-part architecture (hosts, clients, servers) keeps concerns separated and composable</li>
+                        <li>Resources provide context, tools enable actions, prompts define reusable workflows</li>
+                        <li>Start with the official quickstart, then build something relevant to your work</li>
+                        <li>Test with the MCP inspector before integrating with Claude Desktop</li>
+                        <li>Security matters: validate inputs, limit access, and protect sensitive data</li>
+                        <li>Real productivity gains come from combining multiple servers for complex workflows</li>
+                    </ul>
+                </div>
+                <a class="blog-article__back" href="../index.html">
+                    <span aria-hidden="true">&larr;</span>
+                    <span>Back to the homepage</span>
+                </a>
+            </article>
+        </section>
+    </main>
+</body>
+</html>

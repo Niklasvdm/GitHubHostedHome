@@ -1,100 +1,73 @@
-// toggles = document.querySelectorAll(".toggle");
-// toggles.forEach(toggle => toggle.addEventListener("click", () => toggleClick(toggle)))
-
-// // search_icon = document.querySelector("#search-icon");
-// // search_icon.addEventListener("click", () => toggleTogglesVisibility());
-
-// content_boxes = document.querySelectorAll(".content-box");
-
-// function toggleClick(target) {
-//     target.classList.toggle("highlighted");
-//     if (target.classList.contains("highlighted")) {
-//         addContentHighlighting(target.textContent);
-//     } else {
-//         removeContentHighlighting();
-//         addHighlightingForActiveToggles();
-//     }
-// }
-
-// function addContentHighlighting(toggleText) {
-//     content_boxes.forEach(content_box => {
-//         if (content_box.dataset.toggles.includes(toggleText)) {
-//             content_box.classList.add("highlighted");
-//         }
-//     });
-// }
-
-// function addHighlightingForActiveToggles() {
-//     toggles.forEach(toggle => {
-//         if (toggle.classList.contains("highlighted")) {
-//             addContentHighlighting(toggle.textContent);
-//         }
-//     });
-// }
-
-// function removeContentHighlighting() {
-//     content_boxes.forEach(content_box => content_box.classList.remove("highlighted"));
-// }
-
-// function removeToggleHighlighting() {
-//     toggles.forEach(toggle => toggle.classList.remove("highlighted"));
-// }
-
-// function toggleTogglesVisibility() {
-//     document.body.classList.toggle("hide-toggle");
-//     removeContentHighlighting();
-//     removeToggleHighlighting();
-// }
-
-
 document.addEventListener('DOMContentLoaded', () => {
-    const sections = document.querySelectorAll('section');
 
-    sections.forEach(section => {
-        const boxes = Array.from(section.querySelectorAll('.content-box'));
+  // ── Link injection ──
+  if (typeof LINK_URLS === 'object' && LINK_URLS !== null) {
+    const linkNodes = document.querySelectorAll('[data-link-key]');
+    linkNodes.forEach(node => {
+      const key = node.dataset.linkKey;
+      const url = LINK_URLS[key];
+      if (!key || !url) return;
 
-        const sortedBoxes = boxes
-            .map((box, index) => ({
-                element: box,
-                order: Number(box.dataset.order),
-                originalIndex: index,
-            }))
-            .sort((a, b) => {
-                const orderA = Number.isFinite(a.order) ? a.order : Number.MAX_SAFE_INTEGER;
-                const orderB = Number.isFinite(b.order) ? b.order : Number.MAX_SAFE_INTEGER;
+      node.setAttribute('href', url);
 
-                if (orderA === orderB) {
-                    return a.originalIndex - b.originalIndex;
-                }
+      if (/^https?:/i.test(url) && !node.hasAttribute('target')) {
+        node.setAttribute('target', '_blank');
+        node.setAttribute('rel', 'noopener noreferrer');
+      }
+    });
+  }
 
-                return orderA - orderB;
-            });
+  // ── Active sidebar nav on scroll ──
+  const navLinks = document.querySelectorAll('.sidebar__nav-link');
+  const sections = document.querySelectorAll('.section');
 
-        sortedBoxes.forEach(item => {
-            section.appendChild(item.element);
-        });
+  if (sections.length && navLinks.length) {
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const id = entry.target.id;
+          navLinks.forEach(link => {
+            link.classList.toggle('active', link.getAttribute('href') === '#' + id);
+          });
+        }
+      });
+    }, {
+      rootMargin: '-10% 0px -70% 0px',
+      threshold: 0
     });
 
-    if (typeof LINK_URLS === 'object' && LINK_URLS !== null) {
-        const linkNodes = document.querySelectorAll('[data-link-key]');
-        linkNodes.forEach(node => {
-            const key = node.dataset.linkKey;
-            const url = LINK_URLS[key];
+    sections.forEach(section => observer.observe(section));
+  }
 
-            if (!key || !url) {
-                return;
-            }
+  // ── Mobile menu toggle ──
+  const toggle = document.querySelector('.mobile-header__toggle');
+  const sidebar = document.querySelector('.sidebar');
 
-            node.setAttribute('href', url);
+  if (toggle && sidebar) {
+    toggle.addEventListener('click', () => {
+      const isOpen = sidebar.classList.toggle('open');
+      let overlay = document.querySelector('.sidebar-overlay');
 
-            const isHttpLink = /^https?:/i.test(url);
-            const hasTarget = node.hasAttribute('target');
+      if (isOpen && !overlay) {
+        overlay = document.createElement('div');
+        overlay.className = 'sidebar-overlay';
+        document.body.appendChild(overlay);
+        overlay.addEventListener('click', closeSidebar);
+      } else if (!isOpen && overlay) {
+        overlay.remove();
+      }
+    });
 
-            if (isHttpLink && !hasTarget) {
-                node.setAttribute('target', '_blank');
-                node.setAttribute('rel', 'noopener noreferrer');
-            }
-        });
+    // Close sidebar when a nav link is clicked (mobile)
+    navLinks.forEach(link => {
+      link.addEventListener('click', closeSidebar);
+    });
+
+    function closeSidebar() {
+      sidebar.classList.remove('open');
+      const overlay = document.querySelector('.sidebar-overlay');
+      if (overlay) overlay.remove();
     }
+  }
 
 });

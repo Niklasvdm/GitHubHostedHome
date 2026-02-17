@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Niklas Van der Mersch</title>
   <link rel="icon" type="image/png" href="assets/Logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
   <script>
     const LINK_URLS = Object.freeze({
@@ -12,7 +15,6 @@
       instagram: 'https://www.instagram.com/n.vdm/?__d=11',
       youtube: 'https://www.youtube.com/@nvdmmm',
       github: 'https://github.com/niklasvdm',
-      ebayStore: 'https://www.benl.ebay.be/usr/niklasvdm',
       billbuddyArticle: 'posts/publicly-exposing-billbuddy.html',
       freeGithubHosting: 'posts/free-github-hosting.html',
       installProxMox: 'posts/InstallProxmox.html',
@@ -23,98 +25,381 @@
   <script src="js/script.js" defer></script>
 </head>
 <body>
-    <div id="header">
-        <div id="title-div">
-            <div id="title">Niklas Van der Mersch</div>
-        </div>
-    </div>
 
-    <main>
-        <section id="about-me">
-            <h2 class="section-title">About Me</h2>
-            
-            <div class="content-box about-card" data-order="1">
-                <div class="about-card__media">
-                    <img src="assets/photo.png" alt="Workbench setup that inspires my nightly projects" loading="lazy">
-                </div>
-                <div class="about-card__content">
-                    <p>Hi! In my citizen life, I work as a Security Architect. During the night, I dive into side projects.</p>
-                </div>
+  <!-- ── Left Sidebar ── -->
+  <aside class="sidebar">
+    <div class="sidebar__inner">
+      <img class="sidebar__photo" src="assets/photo.png" alt="Niklas Van der Mersch" loading="lazy">
+      <h1 class="sidebar__name">Niklas Van der Mersch</h1>
+      <p class="sidebar__role">Cybersecurity Architect</p>
+      <span class="sidebar__badge">Available for work</span>
+
+      <div class="sidebar__social">
+        <a href="#" data-link-key="github" class="sidebar__social-link" aria-label="GitHub">
+          <img class="icon" src="assets/gh-favicon.ico" alt="">
+        </a>
+        <!--
+        <a href="#" data-link-key="youtube" class="sidebar__social-link" aria-label="YouTube">
+          <img class="icon" src="assets/youtube-favicon.ico" alt="">
+        </a>
+        <a href="#" data-link-key="instagram" class="sidebar__social-link" aria-label="Instagram">
+          <img class="icon" src="assets/IG-favicon.png" alt="">
+        </a>
+        -->
+        <a href="#" data-link-key="email" class="sidebar__social-link" aria-label="Email">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 4h20a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Zm10 8.15L4.47 6.62 3.53 7.9 12 13.85l8.47-5.95-.94-1.28Z"/></svg>
+        </a>
+      </div>
+
+      <nav class="sidebar__nav">
+        <a href="#about" class="sidebar__nav-link active">About</a>
+        <a href="#threat-hunting" class="sidebar__nav-link">Threat Hunting</a>
+        <a href="#skills" class="sidebar__nav-link">Skills</a>
+        <a href="#resume" class="sidebar__nav-link">Resume</a>
+        <a href="#works" class="sidebar__nav-link">Works</a>
+        <a href="#contact" class="sidebar__nav-link">Contact</a>
+      </nav>
+    </div>
+  </aside>
+
+  <!-- Mobile Header (hidden on desktop) -->
+  <header class="mobile-header">
+    <button class="mobile-header__toggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+    <span class="mobile-header__name">NvdM</span>
+  </header>
+
+  <!-- ── Main Content ── -->
+  <main class="content">
+
+    <!-- About Me -->
+    <section id="about" class="section">
+      <h2 class="section__title">About Me</h2>
+      <div class="about">
+        <div class="about__media">
+          <img src="assets/photo2.jpg" alt="Niklas Van der Mersch" loading="lazy">
+        </div>
+        <p>I have lived in several countries, integrating with varied people and mindsets. My focus lies on security architecture and secure software delivery, attempting to find pragmatic ways of securing complex environments.</p>
+        <p>I have a hands-on background in CI/CD security, infrastructure automation, and operational security. During the night, I dive into side projects — from homelabs to capture-the-flag challenges.</p>
+      </div>
+    </section>
+
+    <!-- Threat Hunting -->
+    
+    <!--
+    <section id="threat-hunting" class="section">
+      <h2 class="section__title">Threat Hunting</h2>
+      <p class="section__subtitle">Frameworks, tools, and techniques I work with</p>
+      <div class="tags">
+        <span class="tag">MITRE ATT&CK</span>
+        <span class="tag">YARA</span>
+        <span class="tag">Sigma Rules</span>
+        <span class="tag">Splunk</span>
+        <span class="tag">ELK Stack</span>
+        <span class="tag">Wireshark</span>
+        <span class="tag">CrowdStrike</span>
+        <span class="tag">Velociraptor</span>
+        <span class="tag">SOC</span>
+        <span class="tag">SIEM</span>
+        <span class="tag">NIST</span>
+        <span class="tag">DORA</span>
+        <span class="tag">GDPR</span>
+        <span class="tag">OWASP</span>
+        <span class="tag">SABSA</span>
+        <span class="tag">Networks</span>
+        <span class="tag">Agentic AI</span>
+        <span class="tag">SDLC</span>
+      </div>
+      
+      <div class="writeups">
+        <h3 class="writeups__heading">Write-ups</h3>
+        <p class="writeups__placeholder">Threat hunting write-ups coming soon.</p>
+      </div>
+    </section>
+    -->
+
+    <!-- Skills -->
+    <section id="skills" class="section">
+      <h2 class="section__title">Skills</h2>
+
+      <div class="skill-group">
+        <h3 class="skill-group__title">Security</h3>
+        <div class="tags">
+          <span class="tag">SOC</span>
+          <span class="tag">SDLC</span>
+          <span class="tag">SIEM</span>
+          <span class="tag">Networks</span>
+          <span class="tag">Agentic AI</span>
+          <span class="tag">NIST</span>
+          <span class="tag">DORA</span>
+          <span class="tag">GDPR</span>
+          <span class="tag">OWASP</span>
+          <span class="tag">ArchiMate</span>
+          <span class="tag">SABSA</span>
+        </div>
+      </div>
+
+      <div class="skill-group">
+        <h3 class="skill-group__title">Tech Stack</h3>
+        <div class="tags">
+          <span class="tag">Python</span>
+          <span class="tag">Bash</span>
+          <span class="tag">Java</span>
+          <span class="tag">Terraform</span>
+          <span class="tag">SQL</span>
+          <span class="tag">C(++)</span>
+          <span class="tag">Haskell</span>
+          <span class="tag">GitHub</span>
+          <span class="tag">Unix</span>
+          <span class="tag">Azure</span>
+          <span class="tag">Docker</span>
+          <span class="tag">SAST</span>
+          <span class="tag">RASP</span>
+        </div>
+      </div>
+
+      <div class="skill-group">
+        <h3 class="skill-group__title">Soft Skills</h3>
+        <div class="tags">
+          <span class="tag">Adaptability</span>
+          <span class="tag">Curious</span>
+          <span class="tag">Reliable</span>
+          <span class="tag">Independent</span>
+        </div>
+      </div>
+
+      <div class="skill-group">
+        <h3 class="skill-group__title">Languages</h3>
+        <div class="lang-bars">
+          <div class="lang-bar">
+            <span class="lang-bar__label">English</span>
+            <div class="lang-bar__track">
+              <div class="lang-bar__fill" style="width:80%"><span>C1</span></div>
             </div>
-        </section>
-        <section id="Contact">
-            <h2 class="section-title">Contact</h2>
-            <div class="content-box" data-order="4" data-toggles="Email" id="email">
-                <span class="social-label">
-                    <svg class="social-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                        <path d="M2 4h20a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Zm10 8.15L4.47 6.62 3.53 7.9 12 13.85l8.47-5.95-.94-1.28Z" />
-                    </svg>
-                    <span>Email Address</span>
-                </span>
-                <a class="social-link" href="#" data-link-key="email">niklas@vandermersch.eu</a>
+          </div>
+          <div class="lang-bar">
+            <span class="lang-bar__label">Italian</span>
+            <div class="lang-bar__track">
+              <div class="lang-bar__fill" style="width:80%"><span>C1</span></div>
             </div>
-            <div class="content-box" data-order="2" data-toggles="Contact" id="instagram">
-                <span class="social-label">
-                    <img class="social-icon" src="assets/IG-favicon.png" alt="" loading="lazy">
-                    <span>Instagram</span>
-                </span>
-                <a class="social-link" href="#" data-link-key="instagram">n.vdm</a>
+          </div>
+          <div class="lang-bar">
+            <span class="lang-bar__label">Dutch</span>
+            <div class="lang-bar__track">
+              <div class="lang-bar__fill" style="width:80%"><span>C1</span></div>
             </div>
-            <div class="content-box" data-order="1" data-toggles="Contact" id="youtube">
-                <span class="social-label">
-                    <img class="social-icon" src="assets/youtube-favicon.ico" alt="" loading="lazy">
-                    <span>YouTube</span>
-                </span>
-                <a class="social-link" href="#" data-link-key="youtube">SimplyBuilt</a>
+          </div>
+          <div class="lang-bar">
+            <span class="lang-bar__label">German</span>
+            <div class="lang-bar__track">
+              <div class="lang-bar__fill" style="width:58%"><span>B1/B2</span></div>
             </div>
-            <div class="content-box" data-order="3" data-toggles="Contact" id="github">
-                <span class="social-label">
-                    <img class="social-icon" src="assets/gh-favicon.ico" alt="" loading="lazy">
-                    <span>GitHub</span>
-                </span>
-                <a class="social-link" href="#" data-link-key="github">niklasvdm</a>
+          </div>
+          <div class="lang-bar">
+            <span class="lang-bar__label">French</span>
+            <div class="lang-bar__track">
+              <div class="lang-bar__fill" style="width:50%"><span>B1</span></div>
             </div>
-        </section>
-        <section id="products">
-            <h2 class="section-title">Products</h2>
-            <div class="content-box product-card" data-order="1">
-                <a class="product-card__logo" href="#" data-link-key="ebayStore" target="_blank" rel="noopener noreferrer">
-                    <img class="product-card__image" src="assets/Stickers.png" alt="Vinyl stickers for light switches" loading="lazy">
-                </a>
-                <div class="product-card__content">
-                    <h3 class="product-card__title">Light Switch Stickers</h3>
-                    <p class="product-card__description">Durable stickers showing every room at a glance. Sized for European plates, these waterproof stickers brighten up your room.</p>
-                    <a class="product-card__cta" href="#" data-link-key="ebayStore" target="_blank" rel="noopener noreferrer">
-                        <img class="product-card__cta-logo" src="assets/ebay.png" alt="eBay" loading="lazy">
-                        <span>Interested?</span>
-                    </a>
-                </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="skill-group">
+        <h3 class="skill-group__title">Certifications</h3>
+        <div class="tags">
+          <span class="tag tag--accent">Certified Defensive Security Analyst</span>
+          <span class="tag tag--accent">Archi</span>
+        </div>
+      </div>
+
+      <div class="skill-group">
+        <h3 class="skill-group__title">Side Projects</h3>
+        <div class="tags">
+          <span class="tag">Homelab</span>
+          <span class="tag">Hack the Box</span>
+          <span class="tag">WAF</span>
+          <span class="tag">N8N</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Resume -->
+    <section id="resume" class="section">
+      <h2 class="section__title">Resume</h2>
+
+      <div class="timeline-section">
+        <h3 class="timeline-section__title">Experience</h3>
+        <div class="timeline">
+          <div class="timeline__item">
+            <div class="timeline__dot"></div>
+            <div class="timeline__content">
+              <span class="timeline__date">05/2025 — Present</span>
+              <h4 class="timeline__role">Cybersecurity Architect</h4>
+              <span class="timeline__company">Splynter · Antwerp, Belgium</span>
+              <ul class="timeline__details">
+                <li>Setting up and improving security standards based on DORA and NIST-SP 800-53</li>
+                <li>Head security assessor for projects such as Instant Payments, Ticketing system integrations, Windows 11 Rolout, PAM, CoPilot</li>
+                <li>Creating re-usable security patterns for consistent and secure software delivery</li>
+                <li>Developed and taught courses on safe usage of agentic AI</li>
+                <li>Security lead in projects requiring communication in Dutch, English and French</li>
+              </ul>
             </div>
-        </section>
-        <section id="blog-posts">
-            <h2 class="section-title">Blog Posts</h2>
-            <article class="content-box blog-card" data-order="1">
-                <span class="blog-card__meta">December 22, 2024 · Certification</span>
-                <a class="blog-card__title" href="#" data-link-key="htbCdsaJourney">Conquering the HTB CDSA: A Journey Through Defensive Security</a>
-                <p class="blog-card__excerpt">From red team to blue team—my experience earning the HTB Certified Defensive Security Analyst certification and learning to think like a defender.</p>
-            </article>
-            <article class="content-box blog-card" data-order="1">
-                <span class="blog-card__meta">November 1, 2025 · Guide</span>
-                <a class="blog-card__title" href="#" data-link-key="installProxMox">Encryption at rest, Proxmox and Terraform: the infrastructure of my home lab</a>
-                <p class="blog-card__excerpt">Repurposing an old laptop to encrypt my data at rest and host ProxMox to deploy VMs/Containers, all managed via Terraform </p>
-            </article>
-            <article class="content-box blog-card" data-order="1">
-                <span class="blog-card__meta">October 18, 2025 · Guide</span>
-                <a class="blog-card__title" href="#" data-link-key="freeGithubHosting">Setting up a website via GitHub</a>
-                <p class="blog-card__excerpt">The shortcuts, references, and DNS tweaks I used to get a custom-domain GitHub Pages site online in a weekend.</p>
-            </article>
-            <article class="content-box blog-card" data-order="2">
-                <span class="blog-card__meta">August 29, 2025 · Project log</span>
-                <a class="blog-card__title" href="#" data-link-key="billbuddyArticle">Publicly exposing Billbuddy</a>
-                <p class="blog-card__excerpt">How Billbuddy moved from a tucked-away home lab to a carefully exposed service with hardened edges.</p>
-            </article>
-        </section>
-    </main>
-  
+          </div>
+          <div class="timeline__item">
+            <div class="timeline__dot"></div>
+            <div class="timeline__content">
+              <span class="timeline__date">09/2023 — 05/2025</span>
+              <h4 class="timeline__role">Integration Consultant</h4>
+              <span class="timeline__company">Solita · Leuven, Belgium</span>
+              <ul class="timeline__details">
+                <li>Documentation and training of DevOps engineers on integration platform tools</li>
+                <li>Built &amp; improved CI/CD tooling including deployment, staging, testing, monitoring &amp; logging</li>
+                <li>Extended code scanning to detect vulnerabilities and enforce best practices</li>
+                <li>Part of a task force improving system performance, decreasing real-time APIs by 30–60%</li>
+                <li>Developed automatic iPaaS deployment using Terraform and Bash scripting</li>
+              </ul>
+            </div>
+          </div>
+          <div class="timeline__item">
+            <div class="timeline__dot"></div>
+            <div class="timeline__content">
+              <span class="timeline__date">07/2022</span>
+              <h4 class="timeline__role">Internship</h4>
+              <span class="timeline__company">Solita · Leuven, Belgium</span>
+              <ul class="timeline__details">
+                <li>Combining Security &amp; Integration by creating a capture-the-flag game based on OWASP Top 10 2020</li>
+              </ul>
+            </div>
+          </div>
+          <div class="timeline__item">
+            <div class="timeline__dot"></div>
+            <div class="timeline__content">
+              <span class="timeline__date">07/2021 — 10/2021</span>
+              <h4 class="timeline__role">Backend Developer</h4>
+              <span class="timeline__company">KU Leuven · Leuven, Belgium</span>
+              <ul class="timeline__details">
+                <li>Redesigned and re-implemented architecture from the ground up based on business requirements</li>
+                <li>Adapted MySQL database &amp; Python to containerized Flask back-end</li>
+                <li>Use of Docker for reproducibility and ease of branching</li>
+              </ul>
+            </div>
+          </div>
+          <div class="timeline__item">
+            <div class="timeline__dot"></div>
+            <div class="timeline__content">
+              <span class="timeline__date">09/2020 — 02/2021</span>
+              <h4 class="timeline__role">DRAMA Teaching Assistant</h4>
+              <span class="timeline__company">KU Leuven · Leuven, Belgium</span>
+              <ul class="timeline__details">
+                <li>Teaching Assistant for DRAMA — a Dutch version of machine code using a decimal numbering system instead of binary</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="timeline-section">
+        <h3 class="timeline-section__title">Education</h3>
+        <div class="timeline">
+          <div class="timeline__item">
+            <div class="timeline__dot"></div>
+            <div class="timeline__content">
+              <span class="timeline__date">2011 — 2023</span>
+              <h4 class="timeline__role">MEng Computer Science · Security</h4>
+              <span class="timeline__company">KU Leuven · Leuven, Belgium</span>
+              <ul class="timeline__details">
+                <li>Software engineering, system architecture, requirements engineering</li>
+                <li>Artificial intelligence, machine learning</li>
+                <li>Secure software using state automatons, buffer overflows and basic C exploits</li>
+                <li>Thesis around pseudoanonymisation within distributed file saving architecture, compliant with the GDPR</li>
+              </ul>
+            </div>
+          </div>
+          <div class="timeline__item">
+            <div class="timeline__dot"></div>
+            <div class="timeline__content">
+              <span class="timeline__date">2018 — 2021</span>
+              <h4 class="timeline__role">Bachelor in Computer Science</h4>
+              <span class="timeline__company">KU Leuven · Leuven, Belgium</span>
+              <ul class="timeline__details">
+                <li>Mathematical foundations: automata, logic, programming paradigms</li>
+                <li>Software life-cycle, design patterns, data structures, algorithm complexity</li>
+                <li>Bachelor thesis: recommender system for students using SKLearn ML</li>
+              </ul>
+            </div>
+          </div>
+          <div class="timeline__item">
+            <div class="timeline__dot"></div>
+            <div class="timeline__content">
+              <span class="timeline__date">2013 — 2017</span>
+              <h4 class="timeline__role">High School</h4>
+              <span class="timeline__company">Liceo Lugano 1 · Lugano, Switzerland</span>
+              <ul class="timeline__details">
+                <li>Physics &amp; the application of Mathematics</li>
+                <li>Course on Informatics, exploring cyber abilities</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Blog Posts / Works -->
+    <section id="works" class="section">
+      <h2 class="section__title">Blog Posts</h2>
+      <div class="cards">
+        <article class="card">
+          <span class="card__meta">December 22, 2025 · Certification</span>
+          <a class="card__title" href="#" data-link-key="installProxMox">Conquering the HTB CDSA: A Journey Through Defensive Security</a>
+          <p class="card__excerpt">From red team to blue team—my experience earning the HTB Certified Defensive Security Analyst certification and learning to think like a defender.</p>
+        </article>
+        <article class="card">
+          <span class="card__meta">November 1, 2025 · Guide</span>
+          <a class="card__title" href="#" data-link-key="installProxMox">Encryption at rest, Proxmox and Terraform: the infrastructure of my home lab</a>
+          <p class="card__excerpt">Repurposing an old laptop to encrypt my data at rest and host ProxMox to deploy VMs/Containers, all managed via Terraform.</p>
+        </article>
+        <article class="card">
+          <span class="card__meta">October 18, 2025 · Guide</span>
+          <a class="card__title" href="#" data-link-key="freeGithubHosting">Setting up a website via GitHub</a>
+          <p class="card__excerpt">The shortcuts, references, and DNS tweaks I used to get a custom-domain GitHub Pages site online in a weekend.</p>
+        </article>
+        <article class="card">
+          <span class="card__meta">August 29, 2025 · Project log</span>
+          <a class="card__title" href="#" data-link-key="billbuddyArticle">Publicly exposing Billbuddy</a>
+          <p class="card__excerpt">How Billbuddy moved from a tucked-away home lab to a carefully exposed service with hardened edges.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="section">
+      <h2 class="section__title">Get In Touch</h2>
+      <p class="footer__text">Interested in working together or just want to say hi? Reach out.</p>
+      <div class="contact-links">
+        <a href="#" data-link-key="email" class="contact-link">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 4h20a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Zm10 8.15L4.47 6.62 3.53 7.9 12 13.85l8.47-5.95-.94-1.28Z"/></svg>
+          <span>niklas@vandermersch.eu</span>
+        </a>
+        <a href="#" data-link-key="github" class="contact-link">
+          <img class="icon" src="assets/gh-favicon.ico" alt="">
+          <span>niklasvdm</span>
+        </a>
+        <!--
+        <a href="#" data-link-key="youtube" class="contact-link">
+          <img class="icon" src="assets/youtube-favicon.ico" alt="">
+          <span>SimplyBuilt</span>
+        </a>
+        <a href="#" data-link-key="instagram" class="contact-link">
+          <img class="icon" src="assets/IG-favicon.png" alt="">
+          <span>n.vdm</span>
+        </a>
+        -->
+      </div>
+      <p class="footer__copy">&copy; 2026 Niklas Van der Mersch</p>
+    </section>
+
+  </main>
+
 </body>
 </html>

@@ -1,0 +1,118 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HTB CDSA Exam Attempt and Success: A High‑Level Reflection</title>
+  <link rel="icon" type="image/png" href="../assets/Logo.png">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script src="../js/script.js" defer></script>
+</head>
+<body>
+    <div id="header">
+        <div id="title-div">
+            <div id="title">Niklas Van der Mersch</div>
+        </div>
+    </div>
+
+    <main>
+        <section id="blog-post">
+            <h2 class="section-title">HTB CDSA Exam Attempt and Success: A High‑Level Reflection</h2>
+            <article class="content-box blog-article" data-order="1">
+                <a class="blog-article__back blog-article__back--top" href="../index.html">
+                    <span aria-hidden="true">&larr;</span>
+                    <span>Back to the homepage</span>
+                </a>
+                <div class="blog-article__meta">
+                    <span>December, 2025</span>
+                    <span>~6 minute read</span>
+                    <span>Tags: htb, cdsa, certification, blue-team, experience</span>
+                </div>
+                <div class="markdown-body">
+                    <h3>Why I went for CDSA</h3>
+                    <p>I (re)found Hack The Box Academy at a good moment in my career and worked through the Windows Attack and Defense module and later the SOC Analyst job role path. Those modules added real depth around Windows security, incident handling, and how to structure investigations. I was hooked, and it felt like the right time to aim for the <b>Certified Defensive Security Analyst (CDSA)</b>.</p>
+
+                    <h3>Preparation: what actually helped</h3>
+                    <p>My prep was less about "new tricks" and more about building repeatable habits. The biggest gains came from practicing the same workflows until they felt natural.</p>
+                    <ul>
+                        <li><b>Finishing the SOC Analyst path</b> and revisiting the parts that felt weakest, especially incident handling.</li>
+                        <li><b>Hands‑on malware analysis in VMs</b> to get comfortable with obfuscation, scripting payloads, and quick triage.</li>
+                        <li><b>Detection rule practice</b> with YARA and SIGMA, plus a lot of log review in SIEMs.</li>
+                        <li><b>Tool familiarity</b> with x64dbg, Chainsaw, Splunk, Velociraptor, and the Windows event ecosystem.</li>
+                        <li><b>Documentation habits</b> in Obsidian so I could quickly reuse notes, queries, and templates.</li>
+                    </ul>
+
+                    <h3>Learning from the SOC Analyst Path</h3>
+                    <p>By the time I reached CDSA, I had completed the Windows Attack and Defense module and the SOC Analyst job role path. I kept my notes focused on what actually helped in practice: repeatable workflows, clear evidence trails, and a reporting structure I could reuse.</p>
+
+                    <h4>Windows Attack and Defense: patterns that stuck</h4>
+                    <p>This module sharpened my view of Active Directory abuse and weak configurations. We covered <b>Kerberoasting</b>, <b>ASREPRoasting</b>, <b>GPP passwords</b>, <b>GPO permission abuse</b>, <b>credentials in shares/attributes</b>, <b>DCSync</b>, <b>Golden Tickets</b>, <b>constrained/unconstrained delegation</b>, <b>Print Spooler + NTLM relay</b>, <b>coercing attacks</b>, <b>Object ACLs</b>, and <b>AD CS misconfigurations (ESC1/ESC8)</b>.</p>
+
+                    <h4>What I leaned on most from the path</h4>
+                    <p>The backbone was <b>incident handling</b> and <b>reporting</b>. On the technical side, it was <b>log analysis</b> across Windows/Unix, <b>SIEM searches</b>, <b>malware triage in VMs</b>, and turning findings into <b>YARA</b> and <b>Sigma</b> detections. Tools that showed up the most in my notes were <b>x64dbg</b>, <b>Chainsaw</b>, <b>Splunk</b>, <b>Velociraptor</b>, and the <b>Windows event ecosystem</b>.</p>
+
+                    <h4>Module map (expanded)</h4>
+                    <ul>
+                    <li><b>Incident Handling Process:</b> the <b>Cyber Kill Chain</b> and the full lifecycle (<b>Preparation</b>, <b>Detection &amp; Analysis</b>, <b>Containment</b>, <b>Eradication</b>, <b>Recovery</b>, <b>Post-Incident</b>), with a scenario case study and <b>MITRE ATT&amp;CK</b> mapping.</li>
+                    <li><b>Security Monitoring &amp; SIEM Fundamentals:</b> <b>SIEM architecture</b>, <b>log aggregation/normalization</b>, <b>alerting</b>, <b>contextualization</b>, <b>data flows</b>, and <b>use case design</b> with a compliance mindset.</li>
+                    <li><b>Windows Event Logs &amp; Finding Evil:</b> <b>event log anatomy</b>, <b>custom XML queries</b>, <b>Sysmon</b>, and <b>ETW</b>, plus detection examples like <b>DLL hijacking</b> and <b>PowerShell/.NET injection</b>, and bulk analysis via <b>Get-WinEvent</b>.</li>
+                    <li><b>Threat Hunting &amp; Hunting with Elastic:</b> the <b>hunting mindset</b>, ties to <b>risk assessment</b> and <b>incident handling</b>, and hands-on hunting in <b>Elastic</b> with a named campaign case study.</li>
+                    <li><b>Understanding Log Sources &amp; Investigating with Splunk:</b> <b>SPL fundamentals</b>, <b>data onboarding</b>, efficient search habits, and building alerts for known <b>TTPs</b> and intrusion patterns.</li>
+                    <li><b>Windows Attacks &amp; Defense:</b> each attack follows <b>Description</b>, <b>Attack</b>, <b>Prevention</b>, <b>Detection</b>, and <b>Honeypot</b>, spanning <b>Kerberos abuse</b>, <b>GPO/GPP misconfigurations</b>, <b>credential exposure</b>, <b>delegation pitfalls</b>, and <b>AD CS weaknesses</b>.</li>
+                    <li><b>Intro to Network Traffic Analysis:</b> the analysis process, <b>tcpdump</b>, and <b>Wireshark</b> for validating what is actually on the wire.</li>
+                    <li><b>Intermediate Network Traffic Analysis:</b> <b>link-layer attacks</b> and <b>anomaly detection</b> based on traffic patterns like excessive <b>SYN</b>, <b>ACK</b>, and <b>FIN</b> flags.</li>
+                    <li><b>Working with IDS/IPS:</b> practical work with <b>Suricata</b>, <b>Snort</b>, and <b>Zeek</b>, including <b>operation modes</b>, <b>PCAP replay</b>, and <b>rule development</b>.</li>
+                    <li><b>Introduction to Malware Analysis:</b> <b>static</b> analysis, <b>dynamic</b> analysis, <b>code analysis</b>, and turning artifacts into <b>detection rules</b>.</li>
+                    <li><b>JavaScript Deobfuscation:</b> <b>unpacking</b> and <b>deobfuscation</b> techniques to recover logic and extract IOCs.</li>
+                    <li><b>YARA &amp; Sigma for SOC Analysts:</b> writing <b>YARA</b> for file/memory hits and translating <b>Sigma</b> to <b>SIEM queries</b> with tools like <b>Chainsaw</b> and <b>sigmac</b>.</li>
+                    <li><b>Introduction to Digital Forensics:</b> foundations for <b>disk</b> and <b>memory</b> work, artifact timelines, and tooling like <b>KAPE</b> and <b>Volatility</b>.</li>
+                    <li><b>Detecting Windows Attacks with Splunk:</b> hands-on detection for <b>Kerberos abuse</b>, <b>password spraying</b>, <b>pass-the-hash</b>, and other Windows/AD behaviors using <b>Sysmon</b> and <b>Security</b> events.</li>
+                    <li><b>Security Incident Reporting:</b> how to translate evidence into a clear <b>incident report</b> aligned with the handling stages.</li>
+                    </ul>
+                    <p>The mix of SOC process, SIEM operations (Elastic/Splunk), threat hunting, Active Directory attack analysis, network visibility, IDS/IPS work, malware analysis, and DFIR is what I kept returning to during the exam week.</p>
+
+                    <h3>Exam week (Attempt 1)</h3>
+                    <p>I originally planned a single weekend, but after reading advice from others, I switched to a full week of vacation days. That week had to wait because I started a new role at Splynter, so the exam was postponed for a couple of months.</p>
+
+                    <p>When the week finally came, I leaned heavily on my Obsidian notes and the experience I had built up on the job. I cannot talk about the exam content due to the NDA, but the overall flow is very practical and focused on investigative discipline rather than trivia.</p>
+
+                    <h4>How I approached it</h4>
+                    <ul>
+                        <li><b>Started the report immediately (at least for the second incident, and I wished I'd done it for the first too!).</b> I used the word file, but if I had to re-do it I would use <a href="https://github.com/Syslifters/sysreptor" target="_blank" rel="noopener noreferrer">SysReptor</a> with HTB's official template!</li>
+                        <li><b>Build a timeline early.</b> It keeps you grounded when the data gets noisy.</li>
+                        <li><b>Pivot across sources.</b> I verified everything I could by utilizing multiple event IDs.</li>
+                        <li><b>Utilize LLMs for finding the right event codes.</b> Since it had been a while since I'd done the course, I struggled with finding the right event IDs. LLMs are great at this though!.</li>
+                        <li><b>Take breaks.</b> Short walks helped me reset and see patterns again.</li>
+                    </ul>
+
+                    <h3>Result and reflection</h3>
+                    <p>I passed and became a certified HTB Defensive Security Analyst. It was a year‑long effort with a few pauses along the way, and it reminded me how much I enjoy the investigative side of security.</p>
+
+                    <p>Thanks again to Solita for supporting my growth, and to Splynter for being a great environment to sharpen defensive skills.</p>
+
+                    <h3>Advice for future candidates (high‑level)</h3>
+                    <ul>
+                        <li><b>Practice the workflow, not just the theory.</b> The modules matter, but the exam rewards real investigative rhythm.</li>
+                        <li><b>Get comfortable with logs.</b> Knowing where to look and how to pivot is the real time saver.</li>
+                        <li><b>Document as you go.</b> A consistent template saves hours during the exam week.</li>
+                        <li><b>Respect the NDA.</b> Focus on the experience and the learning, not the scenario details.</li>
+                    </ul>
+
+                    <h4>Takeaways</h4>
+                    <ul>
+                        <li>Preparation is about repetition and consistency, not cramming</li>
+                        <li>Incident handling feels natural when your documentation is solid</li>
+                        <li>Hands‑on malware practice in VMs pays off under time pressure</li>
+                        <li>Obsidian‑style notes make it easy to move fast without skipping steps</li>
+                        <li>Taking breaks is a skill, not a luxury</li>
+                    </ul>
+                </div>
+                <a class="blog-article__back" href="../index.html">
+                    <span aria-hidden="true">&larr;</span>
+                    <span>Back to the homepage</span>
+                </a>
+            </article>
+        </section>
+    </main>
+</body>
+</html>

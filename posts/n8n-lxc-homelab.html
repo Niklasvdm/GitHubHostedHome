@@ -169,16 +169,16 @@ chown -R n8n:n8n /opt/n8n
                         <li><b>AI integration</b> — Gemini turned out to be free and surprisingly capable for these tasks. I was considering running AI locally, but the free tier handles everything I need (and my laptopt only has 4GB of RAM)</li>
                     </ol>
 
-                    <h3>Learned principles for home automation</h3>
+                    <h3>Tips and Tricks for iPaaS systems</h3>
                     <!--FROM DOWN HERE - SECTION NEEDS CHANGING-->
-                    <p>The project went through a few clear phases that I think are worth sharing:</p>
+                    <p>From my time as an iPaaS System Administrator, I have learnt a few rules I will happily share:</p>
                     <ol>
-                        <li><b>Proof of concept</b> — got N8N running locally, set up nginx forwarding, added the domain to GoDaddy, got one or two workflows working</li>
-                        <li><b>Launch on ProxMox</b> — moved to Terraform-managed LXC, configured nginx with Certbot for HTTPS, set up proper <code>n8n.nvdm.eu</code> configuration</li>
-                        <li><b>Google integration</b> — set up a Google service account. N8N's <a href="https://docs.n8n.io/integrations/builtin/credentials/google/service-account/#prerequisites" target="_blank" rel="noopener noreferrer">documentation on this</a> is actually pretty good</li>
-                        <li><b>Resilience</b> — added the backup strategy</li>
-                        <li><b>Workflows</b> — built each automation one by one, fixing WAF issues along the way</li>
-                        <li><b>AI integration</b> — Gemini turned out to be free and surprisingly capable for these tasks. I was considering running AI locally, but the free tier handles everything I need (and my laptopt only has 4GB of RAM)</li>
+                        <li>Don't automate everything - if you do it rarely it doesn't make sense</li>
+                        <li>The exception to this rule is if it just really bothers you to do it</li>
+                        <li>USe environmental variables at the beginning of your script</li>
+                        <li>You can pin data within test executions. This really helps a lot with testing!</li>
+                        <li>Generate some test data when building the flow.</li>
+                        <li>Comment & version control your scripts. Every. Single. Line. Future-you will be grateful</li>
                     </ol>
 
                     <h3>Troubleshooting notes</h3>
@@ -200,10 +200,8 @@ chown -R n8n:n8n /opt/n8n
                         <li>LXC containers with Terraform give you reproducible, lightweight deployments — I now deploy all my home lab services this way</li>
                         <li>NPM-based N8N installation works in unprivileged containers, unlike Docker which needs privileged ones</li>
                         <li>A two-tier backup strategy (daily exports + weekly full backups) gives peace of mind without eating disk space</li>
-                        <li>Free-tier LLMs like Gemini are more than enough for personal automation tasks</li>
-                        <li>Comment your scripts. Every. Single. Line. Future-you will be grateful</li>
-                        <li>Don't automate everything - if you do it rarely it doesn't make sense</li>
-                        
+                        <li>If you're dreading writing software because of the countless integrations, n8n could be for you</li>
+                        <li><b>Be aware fo using this for products</b>> N8N's use policy does not permit to use the software for commercial ends without a proper license. Look up on their website for more information.</li>
                     </ul>
                 </div>
                 <a class="blog-article__back" href="../index.html">

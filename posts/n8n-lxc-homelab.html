@@ -169,6 +169,18 @@ chown -R n8n:n8n /opt/n8n
                         <li><b>AI integration</b> — Gemini turned out to be free and surprisingly capable for these tasks. I was considering running AI locally, but the free tier handles everything I need (and my laptopt only has 4GB of RAM)</li>
                     </ol>
 
+                    <h3>Learned principles for home automation</h3>
+                    <!--FROM DOWN HERE - SECTION NEEDS CHANGING-->
+                    <p>The project went through a few clear phases that I think are worth sharing:</p>
+                    <ol>
+                        <li><b>Proof of concept</b> — got N8N running locally, set up nginx forwarding, added the domain to GoDaddy, got one or two workflows working</li>
+                        <li><b>Launch on ProxMox</b> — moved to Terraform-managed LXC, configured nginx with Certbot for HTTPS, set up proper <code>n8n.nvdm.eu</code> configuration</li>
+                        <li><b>Google integration</b> — set up a Google service account. N8N's <a href="https://docs.n8n.io/integrations/builtin/credentials/google/service-account/#prerequisites" target="_blank" rel="noopener noreferrer">documentation on this</a> is actually pretty good</li>
+                        <li><b>Resilience</b> — added the backup strategy</li>
+                        <li><b>Workflows</b> — built each automation one by one, fixing WAF issues along the way</li>
+                        <li><b>AI integration</b> — Gemini turned out to be free and surprisingly capable for these tasks. I was considering running AI locally, but the free tier handles everything I need (and my laptopt only has 4GB of RAM)</li>
+                    </ol>
+
                     <h3>Troubleshooting notes</h3>
                     <p>A few issues I ran into that might save you some time:</p>
                     <ul>
@@ -190,6 +202,8 @@ chown -R n8n:n8n /opt/n8n
                         <li>A two-tier backup strategy (daily exports + weekly full backups) gives peace of mind without eating disk space</li>
                         <li>Free-tier LLMs like Gemini are more than enough for personal automation tasks</li>
                         <li>Comment your scripts. Every. Single. Line. Future-you will be grateful</li>
+                        <li>Don't automate everything - if you do it rarely it doesn't make sense</li>
+                        
                     </ul>
                 </div>
                 <a class="blog-article__back" href="../index.html">

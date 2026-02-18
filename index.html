@@ -19,6 +19,8 @@
       freeGithubHosting: 'posts/free-github-hosting.html',
       installProxMox: 'posts/InstallProxmox.html',
       htbCdsaJourney: 'posts/htb-cdsa-journey.html',
+      n8nLxcHomelab: 'posts/n8n-lxc-homelab.html',
+      aiSoftwareDev: 'posts/ai-software-development.html',
       blogExample: 'posts/example-template.html'
     });
   </script>
@@ -32,7 +34,7 @@
       <img class="sidebar__photo" src="assets/photo.png" alt="Niklas Van der Mersch" loading="lazy">
       <h1 class="sidebar__name">Niklas Van der Mersch</h1>
       <p class="sidebar__role">Cybersecurity Architect</p>
-      <span class="sidebar__badge">Available for work</span>
+      <span class="sidebar__badge">Working @ Splynter</span>
 
       <div class="sidebar__social">
         <a href="#" data-link-key="github" class="sidebar__social-link" aria-label="GitHub">
@@ -53,7 +55,7 @@
 
       <nav class="sidebar__nav">
         <a href="#about" class="sidebar__nav-link active">About</a>
-        <a href="#threat-hunting" class="sidebar__nav-link">Threat Hunting</a>
+        <!--<a href="#threat-hunting" class="sidebar__nav-link">Threat Hunting</a>-->
         <a href="#skills" class="sidebar__nav-link">Skills</a>
         <a href="#resume" class="sidebar__nav-link">Resume</a>
         <a href="#works" class="sidebar__nav-link">Works</a>
@@ -218,7 +220,7 @@
         <div class="tags">
           <span class="tag">Homelab</span>
           <span class="tag">Hack the Box</span>
-          <span class="tag">WAF</span>
+          <span class="tag">NGINX</span>
           <span class="tag">N8N</span>
         </div>
       </div>
@@ -238,11 +240,12 @@
               <h4 class="timeline__role">Cybersecurity Architect</h4>
               <span class="timeline__company">Splynter · Antwerp, Belgium</span>
               <ul class="timeline__details">
-                <li>Setting up and improving security standards based on DORA and NIST-SP 800-53</li>
-                <li>Head security assessor for projects such as Instant Payments, Ticketing system integrations, Windows 11 Rolout, PAM, CoPilot</li>
-                <li>Creating re-usable security patterns for consistent and secure software delivery</li>
-                <li>Developed and taught courses on safe usage of agentic AI</li>
-                <li>Security lead in projects requiring communication in Dutch, English and French</li>
+                <li>Setting up and improving security standard for companies based on legislation and frameworks such as DORA and NIST-SP 800-53</li>
+                <li>Head security assessor for many projects such as Instant Payments, Ticketing system integrations, Windows 11 Rolout, PAM, CoPilot</li>
+                <li>Creating re-usable security patterns for the organization, guaranteeing consistent and secure software delivery</li>
+                <li>Setting up and improving risk process</li>
+                <li>Developed and taught courses on safe usage of agentic AI and AI for developing software</li>
+                <li>Security lead in projects that require communication in Dutch, English and French</li>
               </ul>
             </div>
           </div>
@@ -253,11 +256,11 @@
               <h4 class="timeline__role">Integration Consultant</h4>
               <span class="timeline__company">Solita · Leuven, Belgium</span>
               <ul class="timeline__details">
-                <li>Documentation and training of DevOps engineers on integration platform tools</li>
-                <li>Built &amp; improved CI/CD tooling including deployment, staging, testing, monitoring &amp; logging</li>
-                <li>Extended code scanning to detect vulnerabilities and enforce best practices</li>
-                <li>Part of a task force improving system performance, decreasing real-time APIs by 30–60%</li>
-                <li>Developed automatic iPaaS deployment using Terraform and Bash scripting</li>
+                <li>Documentation for- and training of other DevOps engineers of integration platform (messaging, iPaaS, file transfer, ...)</li>
+                <li>Used, built &amp; improved several CICD tools including deployment and staging automation, testing, monitoring &amp; logging</li>
+                <li>Built &amp; extended code scanning to detect code vulnerabilities and enforce best practices</li>
+                <li>Part of a task force to improve system performance, decreasing real-time APIs by 30–60%</li>
+                <li>Using Terraform and Bash scripting, developed an automatic deployment of iPaaS platform with built-in scalability, access control and monitoring</li>
               </ul>
             </div>
           </div>
@@ -268,7 +271,10 @@
               <h4 class="timeline__role">Internship</h4>
               <span class="timeline__company">Solita · Leuven, Belgium</span>
               <ul class="timeline__details">
-                <li>Combining Security &amp; Integration by creating a capture-the-flag game based on OWASP Top 10 2020</li>
+                <li>Developed a Capture-the-flag game around API Security using the OWASP Top 10 list for 2021</li>
+                <li>Studied the security possibilities of Gravitee, an open-source API Management software</li>
+                <li>Coded the front-end website associated to the Capture-the-flag game using Vue.js</li>
+                <li>Built containerized application using Python and JavaScript, deployed on Azure</li>
               </ul>
             </div>
           </div>
@@ -279,8 +285,8 @@
               <h4 class="timeline__role">Backend Developer</h4>
               <span class="timeline__company">KU Leuven · Leuven, Belgium</span>
               <ul class="timeline__details">
-                <li>Redesigned and re-implemented architecture from the ground up based on business requirements</li>
-                <li>Adapted MySQL database &amp; Python to containerized Flask back-end</li>
+                <li>Part of a team responsible for expanding existing software to comply with new features</li>
+                <li>Wore the hat of a back-end developer and a data engineer by refactoring the Python code and restricting the database to deal with complex requirements</li>
                 <li>Use of Docker for reproducibility and ease of branching</li>
               </ul>
             </div>
@@ -292,7 +298,31 @@
               <h4 class="timeline__role">DRAMA Teaching Assistant</h4>
               <span class="timeline__company">KU Leuven · Leuven, Belgium</span>
               <ul class="timeline__details">
-                <li>Teaching Assistant for DRAMA — a Dutch version of machine code using a decimal numbering system instead of binary</li>
+                <li>Helping first year students with learning a Dutch Assembly Language</li>
+              </ul>
+            </div>
+          </div>
+          <div class="timeline__item">
+            <div class="timeline__dot"></div>
+            <div class="timeline__content">
+              <span class="timeline__date">10/2019 — 08/2023</span>
+              <h4 class="timeline__role">Bartender Manager</h4>
+              <span class="timeline__company">DE WEERELT · Leuven, Belgium</span>
+              <ul class="timeline__details">
+                <li>Entirely responsible for the well-being of clients at my bar</li>
+                <li>Often being the only bartender present and working until 5 A.M., every week presents new challenges and opportunities to learn from</li>
+              </ul>
+            </div>
+          </div>
+          <div class="timeline__item">
+            <div class="timeline__dot"></div>
+            <div class="timeline__content">
+              <span class="timeline__date">11/2017 — 10/2019</span>
+              <h4 class="timeline__role">Waiter</h4>
+              <span class="timeline__company">Notre Dame Quasimodo · Leuven, Belgium</span>
+              <ul class="timeline__details">
+                <li>Worked full-time serving the largest brasserie in Leuven</li>
+                <li>Trained new people</li>
               </ul>
             </div>
           </div>
@@ -311,8 +341,8 @@
               <ul class="timeline__details">
                 <li>Software engineering, system architecture, requirements engineering</li>
                 <li>Artificial intelligence, machine learning</li>
-                <li>Secure software using state automatons, buffer overflows and basic C exploits</li>
-                <li>Thesis around pseudoanonymisation within distributed file saving architecture, compliant with the GDPR</li>
+                <li>Secure software using state automatons, developing buffer overflows and other basic C exploits</li>
+                <li>Thesis around Pseudoanonymisation within distributed file saving architecture, compliant with the GDPR</li>
               </ul>
             </div>
           </div>
@@ -323,9 +353,9 @@
               <h4 class="timeline__role">Bachelor in Computer Science</h4>
               <span class="timeline__company">KU Leuven · Leuven, Belgium</span>
               <ul class="timeline__details">
-                <li>Mathematical foundations: automata, logic, programming paradigms</li>
-                <li>Software life-cycle, design patterns, data structures, algorithm complexity</li>
-                <li>Bachelor thesis: recommender system for students using SKLearn ML</li>
+                <li>Mathematical foundation of Computer Science: automata, logic and programming paradigms</li>
+                <li>Building of software: the software life-cycle, maintenance, design patterns, data structures, and time/space complexity of algorithms</li>
+                <li>Bachelor Thesis in building a recommender system for students taking imperative programming language course using SKLearn ML</li>
               </ul>
             </div>
           </div>
@@ -337,7 +367,7 @@
               <span class="timeline__company">Liceo Lugano 1 · Lugano, Switzerland</span>
               <ul class="timeline__details">
                 <li>Physics &amp; the application of Mathematics</li>
-                <li>Course on Informatics, exploring cyber abilities</li>
+                <li>Course on Informatics, exploring my IT-teacher's Cyber abilities</li>
               </ul>
             </div>
           </div>
@@ -350,8 +380,18 @@
       <h2 class="section__title">Blog Posts</h2>
       <div class="cards">
         <article class="card">
+          <span class="card__meta">February 17, 2026 · Course</span>
+          <a class="card__title" href="#" data-link-key="aiSoftwareDev">Developing software with AI</a>
+          <p class="card__excerpt">Notes and reflections from a course on leveraging AI tools throughout the software development lifecycle — from ideation to deployment.</p>
+        </article>
+        <article class="card">
+          <span class="card__meta">January 2, 2026 · Guide</span>
+          <a class="card__title" href="#" data-link-key="n8nLxcHomelab">Setting up N8N via LXC container</a>
+          <p class="card__excerpt">Deploying N8N — the open-source workflow automation tool — inside an LXC container on my Proxmox home lab.</p>
+        </article>
+        <article class="card">
           <span class="card__meta">December 22, 2025 · Certification</span>
-          <a class="card__title" href="#" data-link-key="installProxMox">Conquering the HTB CDSA: A Journey Through Defensive Security</a>
+          <a class="card__title" href="#" data-link-key="htbCdsaJourney">Conquering the HTB CDSA: A Journey Through Defensive Security</a>
           <p class="card__excerpt">From red team to blue team—my experience earning the HTB Certified Defensive Security Analyst certification and learning to think like a defender.</p>
         </article>
         <article class="card">

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Setting up N8N via LXC container to my home lab</title>
+  <link rel="icon" type="image/png" href="../assets/Logo.png">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script src="../js/script.js" defer></script>
+</head>
+<body>
+    <div id="header">
+        <div id="title-div">
+            <div id="title">Niklas Van der Mersch</div>
+        </div>
+    </div>
+
+    <main>
+        <section id="blog-post">
+            <h2 class="section-title">Setting up N8N via LXC container to my home lab</h2>
+            <article class="content-box blog-article" data-order="1">
+                <a class="blog-article__back blog-article__back--top" href="../index.html">
+                    <span aria-hidden="true">←</span>
+                    <span>Back to the homepage</span>
+                </a>
+                <div class="blog-article__meta">
+                    <span>January 2, 2026</span>
+                    <span>~10 minute read</span>
+                    <span>Tags: homelab, N8N, LXC, terraform, automation, proxmox</span>
+                    <a href="https://github.com/Niklasvdm/nvdmn8n/tree/main" target="_blank" rel="noopener noreferrer">GitHub Repository</a>
+                </div>
+                <div class="markdown-body">
+                    <h3>The idea</h3>
+                    <p>After getting <a href="InstallProxmox.html">ProxMox up and running with Terraform</a>, I found myself looking for a next project. 
+                    I have been annoyed for a while and wishing to automate some tasks I'm bored of having to do such as archiving my public transport tickets and having to file my investments with the government.
+	                The task is not daunting in it's complexity, but in the boringness of having to set up half a dozen 'developer' projects within different systems to get a token to get to work with them (Gmail, Google Sheets, ...)
+		            The were some other tasks I was dreaming of such as getting some cyber news daily and an overview of my upcoming calendar.</p>
+                    
+                    <p>I had run away from being a low-code platform in the past due to its drawbacks, but I found myself really eyeing n8n. 
+                    Writing code is the fun part, integrating with several systems if you have to do it line by line is just a pain. 
+                    I had also come to appreciate the advantages in maintenance and ease of use with integration platforms.
+                    It's an <b>open-source workflow automation tool, self-hosted</b>. There is a cloud alternative, but I hadn't just set up proxmox to now not run my own infrastructure. 
+                    No vendor lock-in, no monthly fees, and I get to run it on my own infrastructure. 
+                    The whole project took about 5 days from proof of concept to having multiple workflows running in production.</p>
+
+                    <h3>The pleasure of running Docker on TXC</h3>
+                    <p>I actually started with the Docker build, trying to leverage the devil I knew over the devil I didn't (NodeJS). 
+                    Getting it to run on an LXC container proved harder than I expected, and even though I put up a good fight (2 evenings of trying to tame the beast), I gave up trying to get it to run in an unprivileged container (yes on privileged, but I didn't like that).
+                     The NPM-based installation runs perfectly fine in an unprivileged one, which is what it's still running as.</p>
+
+                    <h3>The architecture</h3>
+                    <p>The setup ended up fairly clean:</p>
+                    <ul>
+                        <li><b>Installation</b>: NPM-based (Node.js 20.x LTS) — no Docker dependency inside the container</li>
+                        <li><b>Container</b>: Unprivileged LXC on ProxMox</li>
+                        <li><b>Deployment</b>: Terraform + modular bash scripts</li>
+                        <li><b>Web UI</b>: Port 5678 internally</li>
+                        <li><b>External access</b>: Via my nginx reverse proxy with HTTPS</li>
+                    </ul>
+                    <p>The network path in production:</p>
+                    <pre><code>
+Internet → nginx (443/HTTPS) → N8N (192.168.10.60:5678/HTTP)
+                    </code></pre>
+                    <p>Nginx handles SSL termination and proxies to the container. Webhook URLs and OAuth callbacks all go through <code>https://n8n.nvdm.eu</code>, so everything is encrypted in transit. No ports exposed directly to the internet — only nginx is internet-facing.</p>
+
+                    <h3>Project structure</h3>
+                    <p>I split the repo into clear responsibilities:</p>
+                    <pre><code>
+.
+├── infra/lxc/              # Terraform configuration
+│   ├── main.tf             # Main Terraform config
+│   ├── variables.tf        # Variable definitions
+│   ├── env/                # Environment-specific configs
+│   └── README.md           # Deployment instructions
+├── scripts/                # Installation scripts
+│   ├── install-n8n.sh      # Node.js + N8N installation
+│   ├── configure-n8n.sh    # Service configuration
+│   ├── backup-n8n.sh       # Backup automation
+│   ├── n8n.service         # Systemd service file
+│   └── README.md           # Script documentation
+└── docker/                 # DEPRECATED Docker config (kept for reference)
+                    </code></pre>
+                    <p>Each directory has its own README with documentation scoped to its purpose. First deployment? Read the Terraform guide. Daily operations? Root README. Modifying scripts? Scripts README. I wanted this to be maintainable for future-me.</p>
+
+                    <h3>Deploying with Terraform</h3>
+                    <p>If you read my previous post, you know I hate working in the UI. So naturally, the entire deployment is coded in Terraform. The quick start:</p>
+                    <pre><code>
+# 1. Configure your variables
+cp infra/lxc/env/terraform.tfvars.example env/yourname.tfvars
+
+# 2. Generate an encryption key (important — store this safely!)
+openssl rand -hex 32
+
+# 3. Deploy
+cd infra/lxc && terraform apply -var-file="env/yourname.tfvars"
+                    </code></pre>
+                    <p>When you run <code>terraform apply</code>, here's what actually happens under the hood:</p>
+                    <ol>
+                        <li>Terraform creates an unprivileged LXC container on ProxMox via the Telmate provider</li>
+                        <li>It copies <code>install-n8n.sh</code> into the container and executes it — this installs Node.js 20.x LTS, creates a dedicated <code>n8n</code> system user with <code>/usr/sbin/nologin</code> as shell, and installs N8N globally via npm</li>
+                        <li>It copies the <code>n8n.service</code> systemd unit file into place</li>
+                        <li>It copies and runs <code>configure-n8n.sh</code> with your encryption key, webhook URL, and timezone — this creates the systemd override with environment variables and starts the service</li>
+                    </ol>
+                    <p>Here's the core of the Terraform config that ties it all together:</p>
+                    <pre><code>
+resource "proxmox_lxc" "n8n" {
+  target_node  = var.target_node
+  vmid         = var.vmid
+  hostname     = var.hostname
+  ostemplate   = var.ostemplate
+  password     = var.root_password
+  start        = true
+  onboot       = true
+  unprivileged = true  # No privileged container needed!
+
+  cores  = var.cores   # default: 2
+  memory = var.memory  # default: 2048 MB
+
+  rootfs {
+    storage = var.rootfs_storage
+    size    = var.rootfs_size  # default: 16G
+  }
+
+  network {
+    name   = "eth0"
+    bridge = var.bridge
+    ip     = local.container_cidr
+    gw     = var.gateway
+  }
+
+  ssh_public_keys = file(var.ssh_public_key_path)
+
+  # ... provisioners copy scripts and execute them
+}
+                    </code></pre>
+                    <p>All sensitive values (API tokens, encryption key, root password) live in <code>.tfvars</code> files that are gitignored. The variables file has validation rules — for example, you must provide either <code>pm_api_url</code> or <code>proxmox_host_ip</code>, and if you're using DHCP you need to provide an <code>ssh_host</code> so Terraform can connect during provisioning.</p>
+
+                    <h3>The scripts</h3>
+                    <p>I'm a bit proud of the scripts. Every single line has a comment explaining what it does and why. Future-me will thank past-me (for once).</p>
+                    <p>The <b>install script</b> is straightforward — add the NodeSource GPG key, add the Node.js 20.x repo, install Node.js, create the <code>n8n</code> system user, and install N8N globally:</p>
+                    <pre><code>
+# Create a dedicated system user for running N8N
+# --system: Create a system user (not a regular user account)
+# --home /opt/n8n: Set home directory
+# --shell /usr/sbin/nologin: Prevent interactive login (security)
+id n8n >/dev/null 2>&1 || useradd --system \
+    --home /opt/n8n --shell /usr/sbin/nologin n8n
+
+mkdir -p /opt/n8n/.n8n
+npm install -g n8n
+chown -R n8n:n8n /opt/n8n
+                    </code></pre>
+                    <p>The <b>configure script</b> takes three parameters — encryption key, webhook URL, and timezone — and writes them to a systemd override file with <code>chmod 600</code> permissions. Then it reloads systemd, enables the service, and starts it.</p>
+                    <p>One design choice I want to highlight: for reverse proxy setups, I use <code>WEBHOOK_URL</code> instead of separate <code>N8N_PROTOCOL</code>, <code>N8N_HOST</code>, and <code>N8N_PORT</code> variables. This way N8N generates correct <code>https://</code> webhook and OAuth callback URLs while still listening on plain HTTP internally on port 5678. Saves a lot of confusion.</p>
+
+                    
+                    <h3>Backups</h3>
+                    <p>I set up a two-tier backup strategy that I'm quite happy with. N8N stores everything in <code>/opt/n8n/.n8n/</code> — workflows, credentials, execution history, and binary data.</p>
+
+
+                    <h3>Proof of concept to production</h3>
+                    <p>The project went through a few clear phases that I think are worth sharing:</p>
+                    <ol>
+                        <li><b>Proof of concept</b> — got N8N running locally, set up nginx forwarding, added the domain to GoDaddy, got one or two workflows working</li>
+                        <li><b>Launch on ProxMox</b> — moved to Terraform-managed LXC, configured nginx with Certbot for HTTPS, set up proper <code>n8n.nvdm.eu</code> configuration</li>
+                        <li><b>Google integration</b> — set up a Google service account. N8N's <a href="https://docs.n8n.io/integrations/builtin/credentials/google/service-account/#prerequisites" target="_blank" rel="noopener noreferrer">documentation on this</a> is actually pretty good</li>
+                        <li><b>Resilience</b> — added the backup strategy</li>
+                        <li><b>Workflows</b> — built each automation one by one, fixing WAF issues along the way</li>
+                        <li><b>AI integration</b> — Gemini turned out to be free and surprisingly capable for these tasks. I was considering running AI locally, but the free tier handles everything I need (and my laptopt only has 4GB of RAM)</li>
+                    </ol>
+
+                    <h3>Tips and Tricks for iPaaS systems</h3>
+                    <!--FROM DOWN HERE - SECTION NEEDS CHANGING-->
+                    <p>From my time as an iPaaS System Administrator, I have learnt a few rules I will happily share:</p>
+                    <ol>
+                        <li>Don't automate everything - if you do it rarely it doesn't make sense</li>
+                        <li>The exception to this rule is if it just really bothers you to do it</li>
+                        <li>USe environmental variables at the beginning of your script</li>
+                        <li>You can pin data within test executions. This really helps a lot with testing!</li>
+                        <li>Generate some test data when building the flow.</li>
+                        <li>Comment & version control your scripts. Every. Single. Line. Future-you will be grateful</li>
+                    </ol>
+
+                    <h3>Troubleshooting notes</h3>
+                    <p>A few issues I ran into that might save you some time:</p>
+                    <ul>
+                        <li><b>OAuth callbacks not working</b> — check that <code>WEBHOOK_URL</code> is set correctly and that nginx is proxying both <code>/webhook/*</code> and <code>/rest/oauth2-credential/*</code> paths</li>
+                        <li><b>WAF blocking the UI</b> — N8N's front-end communicates heavily with its back-end. You'll need exclusions</li>
+                        <li><b>Terraform provisioning fails</b> — usually an SSH issue. Make sure the container is up and your SSH keys are configured. I set the connection timeout to 15 minutes because the npm install can take a while</li>
+                        <li><b>Service won't start</b> — <code>journalctl -u n8n.service -n 50</code> is your friend</li>
+                    </ul>
+
+                    <h3>What's next</h3>
+                    <p>I have a growing list of workflow ideas — daily Lithuanian language exercises, YouTube history exports to Obsidian, automated grocery planning, a proper budgeting flow, and job posting aggregation. The beauty of this setup is that adding a new workflow is just a matter of opening the N8N UI and connecting some nodes.</p>
+                    <p>The full deployment code can be given if interested! It is currently still privatized (or if someone before you already sent a message) is up on <a href="https://github.com/Niklasvdm/nvdmn8n/tree/main" target="_blank" rel="noopener noreferrer">GitHub</a> if you want to check it out or adapt it for your own home lab. Credit where it's due — the NPM-based installation approach is adapted from <a href="https://tteck.github.io/Proxmox/" target="_blank" rel="noopener noreferrer">tteck's Proxmox scripts</a>, though I rewrote it for Terraform and modularized the scripts.</p>
+                    <p>As always, let me know if you have questions or want to see any of the workflow configurations in more detail!</p>
+
+                    <h4>Takeaways</h4>
+                    <ul>
+                        <li>LXC containers with Terraform give you reproducible, lightweight deployments — I now deploy all my home lab services this way</li>
+                        <li>NPM-based N8N installation works in unprivileged containers, unlike Docker which needs privileged ones</li>
+                        <li>A two-tier backup strategy (daily exports + weekly full backups) gives peace of mind without eating disk space</li>
+                        <li>If you're dreading writing software because of the countless integrations, n8n could be for you</li>
+                        <li><b>Be aware fo using this for products</b> N8N's use policy does not permit to use the software for commercial ends without a proper license. Look up on their website for more information.</li>
+                    </ul>
+                </div>
+                <a class="blog-article__back" href="../index.html">
+                    <span aria-hidden="true">←</span>
+                    <span>Back to the homepage</span>
+                </a>
+            </article>
+        </section>
+    </main>
+</body>
+</html>

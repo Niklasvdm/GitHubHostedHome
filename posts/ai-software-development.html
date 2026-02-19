@@ -25,24 +25,130 @@
                 </a>
                 <div class="blog-article__meta">
                     <span>February 17, 2026</span>
-                    <span>~5 minute read</span>
-                    <span>Tags: AI, software development, course</span>
+                    <span>~12 minute read</span>
+                    <span>Tags: AI, software development, course, vibe coding, LLM, security</span>
                 </div>
                 <div class="markdown-body">
-                    <h3>An AI-assisted approach to building software</h3>
-                    <p>Notes and reflections from a course on leveraging AI tools throughout the software development lifecycle — from ideation to deployment.</p>
+                    <h3>The idea</h3>
+                    <p> My company <a href="https://www.splynter.be/" target="_blank" rel="noopener noreferrer">Splynter</a> has a mother company called <a href="https://www.themasterlabs.com/home" target="_blank" rel="noopener noreferrer">The Master Labs (TML)</a> that has monthly <i>T-Days</i> in which one of the employees gives courses to the other personnel.
+                    Given my background in software and experience with writing software with AI, I thought this would be a great (and totally non-controversial) topic to bring to those less averse in this world.
+                    The motivation to give a course about this topic was primarily that I felt I had something to bring to the table regarding the narrative about AI and Software Development, different from what one usually hears on the web or in real life. I still had the <b>lessons from my academic years concerning the history and ethics of AI fresh in my mind</b>, and had sufficient experience building programs with AI to have a grasp of what a good workflow looks like.</p> 
+                        
+                    <p> The standard for courses given internally at Splynter / TML have a high standard. The Master Labs has an entire course on telling stories within presentations to keep your audience engaged.
+                    Following the principles and teachings of that course is a guaranteed way of capturing the audience and keeping them engaged throughout the presentation (okay you might lose some people during the presentation, 100% audience capture is extremely hard).
+                     So naturally, halfway through I scrapped the slide deck and rewrote it, because the slides had content but no <i>story</i>.
+                    The rewrite turned it into the story of a programmer across the decades — showing how the hard-won lessons from 70 years of software engineering are the exact same lessons you need when working with AI today.
+                    I called them "the 8 wisdoms" and threaded them through every section. This article is a write-up of that presentation, minus the death-by-PowerPoint experience.</p>
 
-                    <h4>What the course covers</h4>
-                    <p>An overview of the key topics: prompt engineering for code generation, AI-assisted debugging, automated testing with LLMs, and responsible usage patterns.</p>
+                    <h3>The 8 wisdoms</h3>
+                    <p>Every era of software development taught us something. These are the lessons that survived, and they're arguably <i>more</i> important now that AI is writing code for us:</p>
+                    <ol>
+                        <li><b>Understand the problem before writing code</b></li>
+                        <li><b>Don't start from an empty file</b></li>
+                        <li><b>Write code for the future you</b></li>
+                        <li><b>Automate the boring, reason about the complex</b></li>
+                        <li><b>Nothing beats a senior/mentor</b></li>
+                        <li><b>Optimize for change, not perfection</b></li>
+                        <li><b>Treat data like a liability</b></li>
+                        <li><b>Encourage clients to get a custom LLM</b></li>
+                    </ol>
+                    <p>The first seven came from decades of painful industry lessons. The eighth is the new one.</p>
 
-                    <h4>Practical takeaways</h4>
+                    <h3>The story of a programmer</h3>
+                    <p><i>"What more people would know if nerds were charismatic."</i></p>
+
+                    <p>It starts in the 1950s. Programming meant punch cards and batch jobs that ran for hours. You submit your FORTRAN, wait half a day, get back a printed error listing, redesign. When a compile-debug cycle takes a full day, you learn real fast to <b>understand the problem before writing code</b>.</p>
+
+                    <p>Then the 60s-70s hit and systems got big. Telecom, operating systems, government projects. And the realization that killed careers: <b>maintenance was more expensive than development.</b> So they invented modularization, test cases, and C. New wisdoms: <b>write code for the future you</b> and <b>optimize for change, not perfection</b>.</p>
+
+                    <p>The 80s brought scaling problems, safety-critical systems, and teams of developers that actually had to work together. The README was born. You started fixing <i>someone else's</i> code — a skill that turns out to be very relevant when reviewing AI output. Wisdoms added: <b>automate the boring, reason about the complex</b> and <b>nothing beats a senior/mentor</b>.</p>
+
+                    <p>The 90s-2010s gave us the internet, Git, StackOverflow, and the principle of <b>don't start from an empty file</b> — use frameworks, reference architectures, proven patterns. StackOverflow is the embodiment of this: documentation is a lifesaver, start from something you have.</p>
+
+                    <p>And the 2010s-2020s brought Infrastructure as Code, CI/CD pipelines, and the painful lesson that data breaches cost real money. The final pre-AI wisdom: <b>treat data like a liability</b>.</p>
+
+                    <h4>Sidestep: the first AI bubble</h4>
+                    <p>In the 80s, expert systems were the hot thing. Massive hype, extreme capital flow, heavy concentration around one core technology, unrealistic expectations, over-promised timelines, and a lack of proven long-term ROI. Sound familiar? We'll come back to this.</p>
+
+                    <h3>AI arrives</h3>
+                    <p>ChatGPT showed up in 2022. More than a million weekly users. Why now? Finally enough data — they scraped the entire internet (GPT-4 also used "undisclosed resources", make of that what you will).</p>
+
+                    <p>The positive: the barrier of entry for programming has been lowered massively. "Generate me this website", "fix this code", "give me a unit test" — all suddenly accessible. The gap between programming languages is smaller than ever. Saying "I don't know that language so I won't use it" is becoming less and less of a valid excuse.</p>
+
+                    <p>The negative: <b>AI slop.</b> API keys committed to GitHub. Unit tests that only test trivial cases. Logs exposing secrets. Unmaintainable code. Unforeseen executions (like deletion of all files from a drive).
+                    AI is a script monkey that will assemble the very first thing that works, but it won't think of the actual programming logic behind it. It will happily format your hard drive, send your API key to the front-end, and add your secrets in plaintext. It doesn't know better.</p>
+
+                    <h3>Vibe coding: junior to senior</h3>
+                    <p>This was the core of the presentation. I walked through how three levels of developer use AI, and how the wisdoms accumulate.</p>
+
+                    <p><b>The junior vibe coder</b> prompts: <i>"Please generate a website that helps other programmers build their systems fast."</i>
+                    What you get: an extremely complex setup, unmaintainable code, unnecessary imports, no testing. Looks impressive. Nightmare to maintain. Zero wisdoms applied.</p>
+
+                    <p><b>The medior</b> splits it into two phases — design then implement. Documents requirements, asks AI for architecture first, removes what doesn't fit, <i>then</i> asks for code. Still needs manual cleanup (code quality won't match your standards, first tests require rewriting), but most wisdoms are in play.</p>
+
+                    <p><b>The senior</b> does the same two phases but with much more human input before the AI touches anything. Researches similar systems, writes pseudocode, goes through GitHub repos, documents design decisions, thinks about edge cases. The AI becomes a tool, not the architect.</p>
+
+                    <p>The key insight: the more you know what you want to see, the better the results. What you don't spend in analysis, you'll spend fixing later. It's due to the complexity of translating text into the language of math — if you start from the language of math (pseudocode), the translation will be better. <b>There is no AI that can beat experience.</b></p>
+
+                    <h3>The ideal process (and the shortcut)</h3>
+                    <p>I put together a onepager of what I consider the ideal process for developing with AI:</p>
+                    <ol>
+                        <li>Start with <b>requirement analysis</b> — functional & non-functional</li>
+                        <li>Set up a <b>design document</b> with phases (PoC, MVP, features), architecture, and user stories</li>
+                        <li>Use AI to <b>look up similar architectures</b> and spar about the target</li>
+                        <li>Find similar code and develop <b>pseudocode</b></li>
+                        <li>Use AI to <b>develop the code</b>, test cases, and documentation</li>
+                        <li><b>Review</b> everything — adjust where needed</li>
+                        <li>Document <b>typical AI mistakes</b> in a file to refer to (like a <code>CLAUDE.md</code>)</li>
+                    </ol>
+
+                    <p>Now, if you just want to vibe code and don't care about the above — crash course on minimizing risks: <b>KISS</b> (Keep It Simple Stupid), can't expose secrets if there aren't any, probably no vulnerabilities if there are no dependencies, and have a clear beginning and end.</p>
+
+                    <h4>Do's and don'ts</h4>
                     <ul>
-                        <li>How to structure prompts that produce reliable, maintainable code.</li>
-                        <li>Where AI accelerates the workflow and where human judgement remains critical.</li>
-                        <li>Security considerations when integrating AI into the development pipeline.</li>
+                        <li>Don't use code without checking it first</li>
+                        <li>Use AI to <b>explain code</b> — great for understanding an unknown codebase</li>
+                        <li>Don't use AI to <b>refactor</b> — use a proper IDE for that</li>
+                        <li>Every import should be questioned</li>
+                        <li>Starting from an example is almost always faster than starting from scratch</li>
+                        <li>If you have to double check, you always should</li>
                     </ul>
 
-                    <p>AI is reshaping how we write software — understanding its strengths and limits is becoming an essential skill.</p>
+                    <h3>Some success stories</h3>
+                    <p>To show this isn't just theory, I shared three real use cases:</p>
+                    <p><b>Groovy optimization:</b> <i>"Your system is so slow! It's literally taking 6 hours!"</i> — handed the code to AI, asked to optimize for time. Result: <b>6 hours down to 15 minutes.</b></p>
+                    <p><b>Automated deployment:</b> inexperienced engineer building a cloud platform. Terraform and Bash, AI doing the heavy lifting on code while the human handled design, docs, and manual testing. Result: <b>fully automated deployment for environment separation and disaster recovery.</b></p>
+                    <p><b>Unknown codebase:</b> many files, unclear documentation, "extend it with features X, Y and Z." AI figured out where to implement, human reviewed code quality and set up tests. Result: <b>it worked.</b></p>
+
+                    <h3>Recommendations for companies</h3>
+                    <h4>Is this another bubble?</h4>
+                    <p>I put the current AI hype next to the expert systems bubble of the 80s. Massive adoption? Check. Proven efficiency gains? Check. Unrealistic expectations (AGI)? Check. Extreme capital flow? Check. Lack of proven ROI? Debatable.
+                    The efficiency gains are real this time, which is more than expert systems could claim. But the hype outpacing reality? That part hasn't changed.</p>
+
+                    <h4>Shadow AI</h4>
+                    <p>The real risk isn't AI itself — it's employees using whatever AI tool they find online. When shadow AI enters, <b>data leakage follows</b>. The recommendation: provide a company AI rather than pretending people won't use one. Whether that's ChatGPT Enterprise (~€60/user/month), Microsoft Copilot (~€28/user/month), a cloud AI platform (usage-based), or a fully self-hosted LLM (€10k-€100k+/month for regulated industries) — anything is better than your employees pasting customer data into the free tier of whatever chatbot is trending this week.</p>
+
+                    <h4>Agentic AI and keeping it caged</h4>
+                    <p>The presentation also covered agentic AI — autonomous agents that perform multi-step tasks. This is what every company seems to want right now. I built a demo with <b>MCP (Model Context Protocol)</b>, connecting Claude Desktop to Jira and GitHub: reading tickets, creating branches, writing code. MCP is a standardized way to give AI agents access to your tools without giving them the keys to the kingdom.</p>
+
+                    <p>But any LLM with access to data and unmonitored behaviour is a risk. The rules for imprisoning agents: <b>isolate</b> from the rest of your environment, <b>block</b> external internet access, <b>validate</b> all input/output. I pointed the audience to <a href="https://gandalf.lakera.ai/" target="_blank" rel="noopener noreferrer">Gandalf by Lakera</a> — try to trick the AI into revealing secrets. Great exercise for understanding the attack surface.</p>
+
+                    <p>The French cybersecurity agency (ANSSI) also has solid <a href="https://messervices.cyber.gouv.fr/guides/en-security-recommendations-generative-ai-system" target="_blank" rel="noopener noreferrer">recommendations for AI-generated code</a>: no automatic execution of AI code, no automatic commits, verify all referenced libraries, and strongly avoid using AI for critical modules (cryptography, access rights, sensitive data processing).</p>
+
+                    <h3>What I'd do differently</h3>
+                    <p>Some honest self-critique: I needed more <b>interaction with the audience</b> — not "any questions?" but "what do you think happens next?" A <b>hands-on exercise</b> where people write pseudocode for something (like Snake movement) and then use AI to translate it would have been great. <b>Testing</b> deserved its own section. And the MCP demo diagrams were unreadable from the back of the room — should have built up the architecture piece by piece instead of showing the full thing at once.</p>
+                    <p>If I ever give a longer version (feedback suggested 3 hours), I'd add group exercises, a dedicated testing section, and more live demos. Also: more silence between slides. Let the audience think.</p>
+
+                    <h4>Takeaways</h4>
+                    <ul>
+                        <li>The 8 wisdoms from decades of software development are more relevant now, not less — AI makes ignoring them faster and more catastrophic</li>
+                        <li>The difference between junior and senior AI usage isn't the prompts — it's how much thinking happens <i>before</i> the prompt</li>
+                        <li>AI slop is real: unmaintainable code, leaked secrets, unnecessary complexity. Review everything</li>
+                        <li>AI eliminates language specialization — "I don't know that language" is no longer a valid excuse</li>
+                        <li>For companies: provide an AI tool or your employees will use shadow AI and leak your data</li>
+                        <li>Agentic AI is powerful but needs to be imprisoned — isolate, block, validate</li>
+                        <li><b>There is no AI that can beat experience</b></li>
+                    </ul>
                 </div>
                 <a class="blog-article__back" href="../index.html">
                     <span aria-hidden="true">←</span>

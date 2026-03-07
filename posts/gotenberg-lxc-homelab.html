@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deploying Gotenberg: a proper PDF API for the home lab</title>
+  <link rel="icon" type="image/png" href="../assets/Logo.png">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script src="../js/script.js" defer></script>
+</head>
+<body>
+    <div id="header">
+        <div id="title-div">
+            <div id="title">Niklas Van der Mersch</div>
+        </div>
+    </div>
+
+    <main>
+        <section id="blog-post">
+            <h2 class="section-title">Deploying Gotenberg: a proper PDF API for the home lab</h2>
+            <article class="content-box blog-article" data-order="1">
+                <a class="blog-article__back blog-article__back--top" href="../index.html">
+                    <span aria-hidden="true">←</span>
+                    <span>Back to the homepage</span>
+                </a>
+                <div class="blog-article__meta">
+                    <span>March 7, 2026</span>
+                    <span>~8 minute read</span>
+                    <span>Tags: homelab, PDF, Gotenberg, LXC, terraform, docker, proxmox</span>
+                    <a href="https://github.com/Niklasvdm/GotenBerg" target="_blank" rel="noopener noreferrer">GitHub Repository</a>
+                </div>
+                <div class="markdown-body">
+                    <h3>The problem</h3>
+                    <p>One of the things I built in <a href="n8n-lxc-homelab.html">N8N</a> was a workflow that generates PDFs — archiving documents, formatting reports, that sort of thing. 
+                    I'd built it because I was annoyed at having to store train tickets and its metadata each day. It was actually why I wanted to set up ajn iPaaS platform in the first place.
+                    It had been one of my favorite automations: build it in a day and forget about it because it just works. 
+                    Thus, I was upset when <b>it didn't work with the following error:</b> <img src="../assets/PaymentError-PDFConverter.png" alt="PaymentError-PDFConverter">
+                    It had worked flawlessly, but all good times must come to an end. I guess this was my first proper technical debt to fix</p>
+
+                    <p>My first instinct was to reach for <b>Pandoc</b>. It's one of the success stories coming out of the functional programming field, and my mathematical friend (<i>you know who you are</i>) had raved about it's elegance.
+                    It took some looking up online to get a Pandoc node in N8N working... The node required a separate installation of Pandoc and a lot of tinkering to get it working. It felt like I was fighting a program that wasn't implemented well ... Which after checking the GH repo was confirmedly vibe-coded by someone with no background in programming.
+                    After a few hours of painful bug fixing, I had come across the main problem in my plan: Pandoc converts documents — it doesn't render them. 
+                    I can lode the technical implementation, but I was simply using the wrong tool for the job.
+                    </p>
+
+                    <p>After accepting that Pandoc wasn't the answer, I went looking for something that would actually render HTML properly.
+                    That search led me to <b><a href="https://gotenberg.dev" target="_blank" rel="noopener noreferrer">Gotenberg</a></b>.</p>
+
+                    <h3>What Gotenberg is</h3>
+                    <p>Gotenberg is a stateless HTTP API for PDF generation. You send it an HTTP request with your HTML (or a URL, or an Office document), and it sends back a PDF.
+                    Under the hood it bundles <b>Chromium</b> for HTML rendering and <b>LibreOffice</b> for document conversion.
+                    I was looking for something that renders the HTML page as well as a browser, and well, nothing comes closer than this.
+                    </p>
+
+                    <h4>
+                        <table>
+                            <tr>
+                                <th scope="col"> 
+                                    Memory
+                                </th>
+                                <th scope="col">
+                                    Swap
+                                </th>
+                                <th scope="col">
+                                    CPU
+                                </th>
+                                <th scope="col">
+                                    Disk Size
+                                </th>
+                            </tr>
+                            <tr>
+                                <td> 
+                                    2 GB
+                                </td>
+                                <td>
+                                    512 MB
+                                </td>
+                                <td>
+                                    2 CPU
+                                </td>
+                                <td>
+                                    16GB
+                                </td>
+                            </tr>
+                        </table>
+                    </h4>
+                    <p>
+                        I really tried reducing the memory-hungry Chromium to 512MB because it never uses more than ~300MB, but encountered problems with the rendering and availability. 
+                        I have a suspiscion you could reduce it further, but for now I have left it like this because I don't need to ;) .
+                    </p>
+
+                    <h3>A well oiled machine</h3>
+                    <p>That's how I see new services getting deployed to my ProxMox now.
+                        To start off, give the AI some references. I found this easiest by just linking some folders of other projects.
+                        <pre><code>
+ln -s ~/projects/n8n ./n8n
+ln -s ~/projects/modsec-waf ./modsec-waf
+                        </code></pre>
+                        Then I simply insert my master Prompt and reference the linked directory as reference projects, and let the AI build the deployment script.
+                        <pre><code>
+You are an experienced infrastructure engineer with in depth knowledge of IaaS, Ansible, Linux System Administration and installing a wide variety of programs in different programming languages. 
+You prefer to keep code simple over making it overly complex, and are aware of which architectures bring which issues with it (Java with memory, ...)
+
+We will build the infrastructure of my homelab further to set up a system on a Proxmox virtual host.
+
+The rules are as follows:
+
+Containers should always be unprivileged wherever possible, all exemption need to be approved exceedingly and alternatives considered always.
+Terraform code goes into infra/_
+All variables are handled with env.tfvars. You will always have one example .tfvars within infra/env/_
+If there is a ever a remote-exec, if more than 1-2 lines of code, it should be lifted to be a proper script:
+Within infra/configuration/_
+The script (most likely) describing what it does .sh
+All lines within the script should be clearly commented as to what it does and the impact it has.
+The README should be kept up-to-date, with clear instructions on:
+How to launch it (PRE-starting steps)
+How to run the code / what the code does if complicated with detailed steps
+A change log
+A section (and corresponding folder containing scripts) of how to keep the software up to date
+A section (and corresponding folder containing scripts) of how to back up the software / data within the software & restore it if necessary
+A section (and corresponding folder containing scripts) of hardening of the image and software.
+A section for potential bugs & improvements
+Please plan out any details before implementing.
+Security should be a large concern of yours. Please think of applying proper isolation and segmentation.
+                        </code></pre>
+                    </p>
+
+                    <p>
+                        I tell it I want Gotenberg, provide the GitHub Repo and simply wait 15 minutes for it to complete the Terraform and setup scripts.
+                        I do a quality check, plug in the variables and run Terraform apply. No biggie.
+                    </p>
+
+                    <h3>Why does the computer do what you tell it to do instead of what you want it to do</h3>
+                    <p>Except, I ran Terraform apply and it takes 30 minutes... 
+                        Hmm... Okay, I do have a horribly old laptop under it, it's not unusual for that thing to take a while.
+                        But then I start paying attention and notice it's compiling the binary... Highly unusual.
+                        Apparently the AI had taken mainly my n8n as a reference project, using the NodeJS n8n as a reference instead of the containerized ModSec-WAF.
+                        From an architectural point of view, I also don't really like to think about running a Docker container within a LXC container, but from a practical point of view I prefer not having to spend hours debugging.
+                        One little course correction later, and it now took 10 minutes (told you my old laptop takes a while), and it was up and running.
+                    </p>
+                    <h3>Glorious N8N</h3>
+                    
+                    <p>From N8N's perspective, calling it is just an HTTP request:</p>
+                    <pre><code>
+POST http://&lt;gotenberg_ip&gt;:3000/forms/chromium/convert/html
+Content-Type: multipart/form-data
+
+files[index.html]: &lt;your HTML file&gt;
+
+→ returns a PDF
+                    </code></pre>
+                    <p><img src="../assets/2026-03-07-GotenBerg-N8N.png" alt="2026-03-07-GotenBerg-N8N">
+                        Clean, simple, no state to worry about. If the container dies, I just restart it. Nothing is lost.</p>
+
+                    
+                    <h3>Security</h3>
+                    <p>Given that Gotenberg runs Chromium and can fetch URLs, I wanted to be a bit careful here.</p>
+                    <ul>
+                        <li><b>SSRF protection</b>: A deny-list protects Chromium from making outbound requests to any private IP range or the cloud metadata endpoint (<code>169.254.169.254</code>).</li>
+                        <li><b>No internet exposure</b>: The port is strictly internal. Gotenberg has no authentication built in, which is fine as long as it's not reachable from outside your network.</li>
+                        <li><b>tmpfs mounts</b>: <code>/tmp</code>, <code>/var/cache</code>, and the Gotenberg home directory are all mounted as tmpfs — nothing sensitive written to disk.</li>
+                        <li><b>CIS hardening</b>: I run the same <code>harden-lxc.sh</code> script I use for all my containers — CIS Debian 13 Benchmark Level 1, applied via SSH from my machine during the Terraform provisioning run. The Gotenberg profile specifically skips disabling <code>net.ipv4.ip_forward</code> (which Docker needs for its internal bridge network).</li>
+                    </ul>
+
+                    <h3>Updating</h3>
+                    <p>The <code>update-gotenberg.sh</code> script runs from your machine via SSH and handles two independent phases: OS package updates and the Docker image update. You can run either or both:</p>
+                    <pre><code>
+# Full update
+./update/update-gotenberg.sh -h 192.168.1.210
+
+# Just the Docker image, pinned to a specific version
+./update/update-gotenberg.sh -h 192.168.1.210 --skip-os -v 8.18.0
+
+# Rolled back to a previous version
+./update/update-gotenberg.sh -h 192.168.1.210 --skip-os -v 8.17.3
+                    </code></pre>
+                    <p>It pulls the new image before stopping the running container, so downtime is a few seconds rather than however long a 2 GB download takes. The script also prints a rollback command at the end if the image changed, which I appreciate every time I don't need to look it up.</p>
+
+                    <h3>Takeaways</h3>
+                    <ul>
+                        <li>Pandoc is a great tool, but it's a document converter, not a browser. If your HTML relies on anything written after 2010, you probably want something with Chromium behind it</li>
+                        <li>I love the fact that at this point, adding or removing containers feels intuitive and easy.</li>
+                        <li>Stateless services are a pleasure to operate. No backups, no migrations, no "what was the state of that database." Re-deploy and move on</li>
+                    </ul>
+                    <p>I am considering adding a mock project to GitHub that has all the scripts for one of the projects. I havent because I kind of assume no one looks at my GitHub or these writeups anyway. I have released the one for ActualBudget though, though it doesnt have the hardening script yet.</p>
+                </div>
+                <a class="blog-article__back" href="../index.html">
+                    <span aria-hidden="true">←</span>
+                    <span>Back to the homepage</span>
+                </a>
+            </article>
+        </section>
+    </main>
+</body>
+</html>

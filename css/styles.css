@@ -323,6 +323,44 @@ a:hover, a:focus {
   opacity: .85;
 }
 
+.tag--dim {
+  opacity: 0.4;
+}
+
+/* ===== Collapsible skill groups ===== */
+
+.skill-group__title {
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .4rem;
+}
+
+.skill-group__chevron {
+  font-size: .65rem;
+  display: inline-block;
+  transition: transform .25s ease;
+  line-height: 1;
+}
+
+.skill-group--collapsed .skill-group__chevron {
+  transform: rotate(-90deg);
+}
+
+.skill-group__body {
+  overflow: hidden;
+  max-height: 600px;
+  opacity: 1;
+  transition: max-height .35s ease, opacity .25s ease;
+}
+
+.skill-group--collapsed .skill-group__body {
+  max-height: 0;
+  opacity: 0;
+}
+
 /* ===== Writeups ===== */
 
 .writeups {

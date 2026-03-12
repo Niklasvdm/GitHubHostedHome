@@ -39,6 +39,13 @@ document.addEventListener('DOMContentLoaded', () => {
     sections.forEach(section => observer.observe(section));
   }
 
+  // ── Collapsible skill groups ──
+  document.querySelectorAll('.skill-group__title').forEach(title => {
+    title.addEventListener('click', () => {
+      title.closest('.skill-group').classList.toggle('skill-group--collapsed');
+    });
+  });
+
   // ── Mobile menu toggle ──
   const toggle = document.querySelector('.mobile-header__toggle');
   const sidebar = document.querySelector('.sidebar');

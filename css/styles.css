@@ -163,6 +163,16 @@ a:hover, a:focus {
   fill: var(--color-accent);
 }
 
+.sidebar__social-link img.icon {
+  filter: invert(1) opacity(0.5);
+  transition: filter .2s;
+}
+
+.sidebar__social-link:hover img.icon,
+.sidebar__social-link:focus img.icon {
+  filter: invert(78%) sepia(40%) saturate(500%) hue-rotate(5deg) brightness(95%);
+}
+
 /* Sidebar Navigation */
 
 .sidebar__nav {
@@ -218,7 +228,7 @@ a:hover, a:focus {
 
 .content > .section {
   width: 100%;
-  max-width: 700px;
+  max-width: 900px;
 }
 
 .section {
@@ -321,6 +331,56 @@ a:hover, a:focus {
 
 .tag--accent:hover {
   opacity: .85;
+}
+
+.tag--dim {
+  opacity: 0.4;
+}
+
+/* ===== Collapsible skill groups ===== */
+
+.skill-group__title {
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .4rem;
+}
+
+.skill-group__chevron {
+  font-size: .65rem;
+  display: inline-block;
+  transition: transform .25s ease;
+  line-height: 1;
+}
+
+.skill-group--collapsed .skill-group__chevron {
+  transform: rotate(-90deg);
+}
+
+.skill-group__body {
+  overflow: hidden;
+  max-height: 600px;
+  opacity: 1;
+  transition: max-height .35s ease, opacity .25s ease;
+}
+
+.skill-group--collapsed .skill-group__body {
+  max-height: 0;
+  opacity: 0;
+}
+
+.skill-group__preview {
+  display: none;
+  flex-wrap: wrap;
+  gap: .4rem;
+  justify-content: center;
+  margin-top: .5rem;
+}
+
+.skill-group--collapsed .skill-group__preview {
+  display: flex;
 }
 
 /* ===== Writeups ===== */
@@ -565,6 +625,16 @@ a:hover, a:focus {
 
 .contact-link svg {
   fill: currentColor;
+}
+
+.contact-link img.icon {
+  filter: invert(1) opacity(0.5);
+  transition: filter .2s;
+}
+
+.contact-link:hover img.icon,
+.contact-link:focus img.icon {
+  filter: invert(78%) sepia(40%) saturate(500%) hue-rotate(5deg) brightness(95%);
 }
 
 .footer__copy {

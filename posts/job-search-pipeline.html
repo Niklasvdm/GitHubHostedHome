@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reducing the emotional pains of looking for a job using automation</title>
+  <link rel="icon" type="image/png" href="../assets/Logo.png">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script src="../js/script.js" defer></script>
+</head>
+<body>
+    <div id="header">
+        <div id="title-div">
+            <div id="title">Niklas Van der Mersch</div>
+        </div>
+    </div>
+
+    <main>
+        <section id="blog-post">
+            <h2 class="section-title">Reducing the emotional pains of looking for a job using automation</h2>
+            <article class="content-box blog-article" data-order="1">
+                <a class="blog-article__back blog-article__back--top" href="../index.html">
+                    <span aria-hidden="true">←</span>
+                    <span>Back to the homepage</span>
+                </a>
+                <div class="blog-article__meta">
+                    <span>May, 2026</span>
+                    <span>~10 minute read</span>
+                    <span>Tags: job-hunting, AI, LaTeX, automation, resume, interview-prep</span>
+                </div>
+                <div class="markdown-body">
+                    <nav style="border:1px solid #262626;border-radius:8px;padding:1rem 1.5rem;margin-bottom:2rem;font-size:13px;line-height:2.1;">
+                        <span style="font-size:11px;color:#8a8a8a;text-transform:uppercase;letter-spacing:0.08em;font-weight:600;">Contents</span>
+                        <ol style="margin:0.5rem 0 0;padding-left:1.4rem;">
+                            <li><a href="#introduction" style="color:#C9A861;text-decoration:none;">Introduction</a></li>
+                            <li><a href="#overview" style="color:#C9A861;text-decoration:none;">Overview</a></li>
+                            <li><a href="#preparation" style="color:#C9A861;text-decoration:none;">Preparation work</a>
+                                <ol style="padding-left:1.2rem;margin:0;line-height:2.1;">
+                                    <li><a href="#resume-template" style="color:#8a8a8a;text-decoration:none;">Preparing your main resume template</a></li>
+                                    <li><a href="#cover-letter" style="color:#8a8a8a;text-decoration:none;">Preparing some cover letters</a></li>
+                                    <li><a href="#workspace" style="color:#8a8a8a;text-decoration:none;">Set up your workspace</a></li>
+                                </ol>
+                            </li>
+                            <li><a href="#pipeline" style="color:#C9A861;text-decoration:none;">Using the automation</a></li>
+                            <li><a href="#waiting" style="color:#C9A861;text-decoration:none;">Dreadfully waiting</a></li>
+                            <li><a href="#interview" style="color:#C9A861;text-decoration:none;">Interviewing</a></li>
+                            <li><a href="#limits" style="color:#C9A861;text-decoration:none;">What the pipeline does not replace</a></li>
+                            <li><a href="#why" style="color:#C9A861;text-decoration:none;">Why bother building this</a></li>
+                        </ol>
+                    </nav>
+
+                    <h3 id="introduction">Introduction</h3>
+                    <p>I found myself repeating the same pattern over and over during my job search, to the point where I wanted to automate as much of it as possible.
+                        I have blog posts, job descriptions, technologies, certificates and more to prove my competencies, but the bar feels incredibly high nowadays for resumes. It needs to be tailored for each position, but even when you do, a recruiter most likely spends less than 9 seconds looking at it.
+                        <br>
+                    I wanted to write about this because the process of applying for jobs is a soul-sucking process (for some) and I think I can contribute something useful.</p>
+
+                    <p>If you're just starting with the job search and do not have negative associations to applying for jobs, then this will surely contain some useful information. 
+                        <br>If you still have no idea what I'm talking about and haven't encountered much difficulty finding, please contact me and teach me your secrets.   
+                    </p>
+                                        <p>
+                        The goal is to have a pipeline where all you do is <span style="color: #C9A861"><b>insert a job listing and receive a customized resume and motivation letter</b></span>. I personally add in some tracking and information about the company, but that is not strictly necessary.
+                    </p>
+
+
+                    <h3 id="overview">Overview</h3>
+
+
+                    <svg width="100%" viewBox="0 0 720 600" style="max-width:720px;display:block;margin:2rem auto;" xmlns="http://www.w3.org/2000/svg" font-family="system-ui,-apple-system,sans-serif" aria-label="Job search pipeline diagram">
+                      <defs>
+                        <marker id="arr" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                          <polygon points="0 0,10 3.5,0 7" fill="#C9A861"/>
+                        </marker>
+                        <marker id="arr-m" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                          <polygon points="0 0,10 3.5,0 7" fill="#8a8a8a"/>
+                        </marker>
+                      </defs>
+
+                      <!-- 1. Job Listing -->
+                      <rect x="260" y="16" width="200" height="52" rx="8" fill="#1a1a1a" stroke="#262626" stroke-width="1.5"/>
+                      <text x="360" y="37" text-anchor="middle" font-size="13" font-weight="600" fill="#f2f2f2">Job Listing</text>
+                      <text x="360" y="54" text-anchor="middle" font-size="10" fill="#8a8a8a">+ referral / tier check</text>
+
+                      <!-- arrow 1 -->
+                      <line x1="360" y1="68" x2="360" y2="97" stroke="#C9A861" stroke-width="1.5" marker-end="url(#arr)"/>
+
+                      <!-- 2. AI Recruiter Prompt -->
+                      <rect x="110" y="100" width="500" height="90" rx="8" fill="rgba(201,168,97,0.09)" stroke="#C9A861" stroke-width="1.5"/>
+                      <text x="360" y="122" text-anchor="middle" font-size="13" font-weight="600" fill="#C9A861">AI Recruiter Prompt</text>
+                      <text x="360" y="143" text-anchor="middle" font-size="11" fill="#f2f2f2">reads: CV (LaTeX master) · website · job listing</text>
+                      <text x="360" y="162" text-anchor="middle" font-size="11" fill="#8a8a8a">assesses: role · technologies · language · degree · experience</text>
+                      <text x="360" y="179" text-anchor="middle" font-size="10" font-style="italic" fill="#8a8a8a">lenient — asks clarifying questions rather than assuming poor fit</text>
+
+                      <!-- arrow 2 -->
+                      <line x1="360" y1="190" x2="360" y2="217" stroke="#C9A861" stroke-width="1.5" marker-end="url(#arr)"/>
+
+                      <!-- 3. Compatibility diamond -->
+                      <polygon points="360,220 455,268 360,316 265,268" fill="#1a1a1a" stroke="#262626" stroke-width="1.5"/>
+                      <text x="360" y="263" text-anchor="middle" font-size="12" font-weight="600" fill="#f2f2f2">≥ 65%</text>
+                      <text x="360" y="278" text-anchor="middle" font-size="10" fill="#8a8a8a">match?</text>
+
+                      <!-- YES arrow -->
+                      <line x1="360" y1="316" x2="360" y2="354" stroke="#C9A861" stroke-width="1.5" marker-end="url(#arr)"/>
+                      <text x="370" y="338" font-size="11" fill="#C9A861">yes</text>
+
+                      <!-- NO arrow + skip -->
+                      <polyline points="455,268 592,268" fill="none" stroke="#8a8a8a" stroke-width="1.5" marker-end="url(#arr-m)"/>
+                      <text x="464" y="258" font-size="11" fill="#8a8a8a">no</text>
+                      <rect x="594" y="244" width="106" height="50" rx="8" fill="#1a1a1a" stroke="#8a8a8a" stroke-width="1.5" stroke-dasharray="5,3"/>
+                      <text x="647" y="265" text-anchor="middle" font-size="11" fill="#8a8a8a">skip</text>
+                      <text x="647" y="281" text-anchor="middle" font-size="10" fill="#8a8a8a">move on</text>
+
+                      <!-- 4. Output fan -->
+                      <line x1="360" y1="354" x2="360" y2="374" stroke="#C9A861" stroke-width="1.5"/>
+                      <line x1="137" y1="374" x2="583" y2="374" stroke="#C9A861" stroke-width="1.5"/>
+                      <line x1="137" y1="374" x2="137" y2="393" stroke="#C9A861" stroke-width="1.5" marker-end="url(#arr)"/>
+                      <line x1="360" y1="374" x2="360" y2="393" stroke="#C9A861" stroke-width="1.5" marker-end="url(#arr)"/>
+                      <line x1="583" y1="374" x2="583" y2="393" stroke="#C9A861" stroke-width="1.5" marker-end="url(#arr)"/>
+
+                      <!-- Tailored CV -->
+                      <rect x="52" y="393" width="170" height="62" rx="8" fill="#1a1a1a" stroke="#262626" stroke-width="1.5"/>
+                      <text x="137" y="416" text-anchor="middle" font-size="12" font-weight="600" fill="#f2f2f2">Tailored CV</text>
+                      <text x="137" y="433" text-anchor="middle" font-size="10" fill="#8a8a8a">.tex · Companies/ folder</text>
+                      <text x="137" y="448" text-anchor="middle" font-size="10" fill="#8a8a8a">comment/uncomment per role</text>
+
+                      <!-- Cover Letter -->
+                      <rect x="275" y="393" width="170" height="62" rx="8" fill="#1a1a1a" stroke="#262626" stroke-width="1.5"/>
+                      <text x="360" y="416" text-anchor="middle" font-size="12" font-weight="600" fill="#f2f2f2">Cover Letter</text>
+                      <text x="360" y="433" text-anchor="middle" font-size="10" fill="#8a8a8a">AI draft → rewritten</text>
+                      <text x="360" y="448" text-anchor="middle" font-size="10" fill="#8a8a8a">direct · own voice</text>
+
+                      <!-- Obsidian Note -->
+                      <rect x="498" y="393" width="170" height="62" rx="8" fill="#1a1a1a" stroke="#262626" stroke-width="1.5"/>
+                      <text x="583" y="416" text-anchor="middle" font-size="12" font-weight="600" fill="#f2f2f2">Obsidian Note</text>
+                      <text x="583" y="433" text-anchor="middle" font-size="10" fill="#8a8a8a">match table · status</text>
+                      <text x="583" y="448" text-anchor="middle" font-size="10" fill="#8a8a8a">connections · interview notes</text>
+
+                      <!-- 5. Collect to Interview Prep -->
+                      <line x1="137" y1="455" x2="137" y2="478" stroke="#8a8a8a" stroke-width="1.5" stroke-dasharray="4,3"/>
+                      <line x1="360" y1="455" x2="360" y2="478" stroke="#8a8a8a" stroke-width="1.5" stroke-dasharray="4,3"/>
+                      <line x1="583" y1="455" x2="583" y2="478" stroke="#8a8a8a" stroke-width="1.5" stroke-dasharray="4,3"/>
+                      <line x1="137" y1="478" x2="583" y2="478" stroke="#8a8a8a" stroke-width="1.5" stroke-dasharray="4,3"/>
+                      <line x1="360" y1="478" x2="360" y2="496" stroke="#8a8a8a" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-m)"/>
+
+                      <!-- Interview Prep (optional) -->
+                      <rect x="225" y="498" width="270" height="66" rx="8" fill="#1a1a1a" stroke="#8a8a8a" stroke-width="1.5" stroke-dasharray="6,3"/>
+                      <text x="360" y="521" text-anchor="middle" font-size="12" font-weight="600" fill="#8a8a8a">Interview Prep</text>
+                      <text x="360" y="538" text-anchor="middle" font-size="10" fill="#8a8a8a">mock Q&amp;A · feedback per attempt</text>
+                      <text x="360" y="554" text-anchor="middle" font-size="10" fill="#8a8a8a">markdown debrief → Obsidian</text>
+                      <text x="503" y="514" font-size="10" font-style="italic" fill="#8a8a8a">(if interview)</text>
+                    </svg>
+
+
+                    <h3 id="preparation">
+                        Preparation work
+                    </h3>
+                    <p>
+                        Listen, if you're desperately looking for a job and mass applying, this approach is most likely not sustainable. Don't get me wrong I've seen it work, but the result can be disappointing and you might find yourself in the same boat again a few months later.
+                        Do the following preparatory work instead:
+                    </p>
+                    <ol>
+                        <li> 
+                            <span style="color: #C9A861"><b>Research</b></span> the industries, companies and roles that you like. Start with companies that you know you'd like working for and look for similar ones.
+                            Research their open roles, roles of people who work there and note down the list of job titles.
+                        </li>
+                        <li>
+                            For those companies, <span style="color: #C9A861"><b>bookmark/save the recruitment page</b></span> and make sure to visit once a week to look at their open positions. <span style="color: #C9A861"><b>I cannot overstate this: being among the first to apply makes a massive difference</b></span>.
+                        </li>
+                        <li>
+                            If you're looking in a specific location, <span style="color: #C9A861"><b>use AI to find local recruitment boards</b></span>. You'd be surprised on how many people only put jobs on there. We all know LinkedIn, but that will not save you (more on that later).
+                        </li>
+                        <li>
+                            <span style="color: #C9A861"><b>Create search filters and alerts for those job</b></span> titles into the known job application sites (LinkedIn being the most well known).
+                        </li>
+                        <li>
+                            Build your <span style="color: #C9A861"><b>master resume template</b></span> as this is the foundation everything else runs on
+                        </li>
+                        <li>
+                            Write a few <span style="color: #C9A861"><b>cover letter drafts</b></span> to use as reference material later
+                        </li>
+                        <li>
+                            Set up your <span style="color: #C9A861"><b>workspace</b></span> and choose your AI tool
+                        </li>
+                    </ol>
+                    
+                    <h4 id="resume-template">
+                        Preparing your main resume template
+                    </h4>
+                        <p>
+                            This is the most important step in the preparatory work. AI won't save you in an interview when you need to talk about your experience, you need to own every word of it. Lying on resumes is a controversial topic and I would personally recommend against it, but also acknowledge that in selling yourself, at times it's okay to make the stuff you did sound more glorious than it might have been.
+                        </p>
+                        <p> 
+                            For building your master resume, I recommend having something easily digestible by AI and easily exportable to PDF. Though you can use word and copy paste back and forth, it is not what I recommend doing. 
+                            Use a <span style="color: #C9A861"><b>descriptive markup language (if this terminology overwhelms you, skip to the next paragraph and just use HTML)</b></span>. I used <span style="color: #C9A861"><b>LaTeX</b></span> but you can use a wide variety of other description languages like HTML or (AsciiDoc, Markdown, and RST are also solid choices).
+                            My live website is also a close copy of my master resume. I feed both into the automation, which gives it more context to work with.
+                            <br>
+                            This will make it easier for the AI to edit your resume optimized for the job listing. Again, this does not mean you let the AI hallucinate. It does mean you'll provide the information the AI needs to generate the resume it needs.
+                            <br>
+                            <span style="color: #C9A861"><b>You can probably ask an AI to do this for you as well</b></span>. Provide your current PDF resume and it'll surely be able to translate that to HTML.
+                        </p>
+
+                        <p>
+                            Then list out all your relevant experiences, making sure to get all the information right concerning technologies, tools, tasks and experience.
+                            You can simply add this as information, tags, comments, ... Depending on your experience with markup languages and programming in general the easier this step will be.
+                            Over time you will most likely have some resumes that you really like for certain roles. I had saved a few resumes for specific roles that I thought really chose the critical experiences to highlight what I bring to the table. The more qualitative data you have, the more accurate the overall process will be.
+                            <br>
+                            <span style="color: #C9A861"><b>To put your work and attitude in the best light, use a structure in your bullet listings that mirrors <i>I started with x, made y improvements and the result was z</i></b></span>. 
+                        </p>
+                        <p>
+                             Here are some examples:
+                        </p>
+                            <ul>
+                                <li>
+                                    Noticed a lack of incident response playbooks and security procedures, creating processes and procedures to prevent mistakes, conﬁrm with legislation and help junior team members
+                                </li>
+                                <li>
+                                    Started with a lack of cleaning discipline leading to unsatisfied customers. I set up cleaning guides and worked together with others to set up cleaning schedule to make sure the bar was always spotless
+                                </li>
+                                <li>
+                                    On own initiative, suggested and built several automations in Python, Java and Powershell that improved security, eﬃciency and/or documentation
+                                </li>
+                            </ul>
+                        <p>
+                            There are a million and one guides on how to toot your own horn for the sake of appealing to recruiters and this guide is not meant to be that. 
+                            But the tip helped me nonetheless and I received a lot of good feedback.
+                        </p>
+                
+                        <h4 id="cover-letter">
+                            Preparing some cover letters
+                        </h4>
+                            <p>
+                                If you haven't done this already, use some job postings previously found and set up a draft of what you want the cover letter to include before you generate one.
+                                If you have written some in the past, use those as reference with maybe a small description of the company and the role you applied to.
+                                Make sure to have a template for this in the same markup language (such as HTML or LaTeX) that matches the style and aesthetics of your main resume.
+                                <br>
+                                The problem with a cover letter is that there always remains a good chance that no one will read it. 
+                                However, when read I believe it can be a great way to let your <span style="color: #C9A861"><b>enthusiasm, ambition and personality shine through</b></span>. 
+                                Think of it as a commentary on your resume, not repeating what's in it, but making the case for why it matters. The goal is to charm the recruiter into wanting to talk to you.
+                                <br>
+                                This article is not meant to be a guide in how to write cover letters. There are many out there that will do a better job than me but just know that you should <span style="color: #C9A861"><b>keep it short and sweet</b></span>.
+                            </p>
+                
+                        <h4 id="workspace">
+                            Set up your workspace
+                        </h4>
+
+                        <p>
+                            Pick your poison: I use <span style="color: #C9A861"><b>Claude Code</b></span> within VS Code. 
+                            My project folder contains linked directories (shortcuts) to my Obsidian vault, my Website code and my CV project folder (also hosted in GitHub). 
+                            Technically you could do simply one big folder with some subfolders as well, but this works better for me. 
+                            <br>
+                            Linked folders are a Linux thing and I'm not sure they'd translate well to Windows. If anyone tries it and figures it out, let me know.
+                            <br> 
+                            The requirements for the automation are as follows:
+                            <ol>
+                                <li>
+                                    It needs to be able to <span style="color: #C9A861"><b>ingest a job posting</b></span> and indicate the compatibility
+                                    <br>
+                                    <i>
+                                        It thus needs access to HTML / TXT pages <span style="color: #C9A861">where you saved the job posting</span>
+                                    </i>
+                                </li>
+                                <li>
+                                    It needs to be able to prepare resumes based on other files
+                                    <br><i>
+                                        It thus needs access to your master resume template and other related content
+                                    </i>
+                                </li>
+                            </ol>
+                        </p>
+
+
+
+                    <h3 id="pipeline">
+                        Using the automation
+                    </h3>
+                    <p>
+                        The <span style="color: #C9A861">first step</span> is to <span style="color: #C9A861"><b>save the job posting</b></span> and launch Claude Code with the master prompt to check compatibility.
+                        Some websites won't let you save the job posting text directly because they use frontend rendering to display it. In those cases, CTRL+A and paste into a text file works fine.
+                        I also often didn't bother to read the description, responsibilities or requirements before throwing it into my pipeline. 
+                        I'd read it later on anyway if I ended up applying.
+                        <br>
+                        Here is my prompt for <span style="color: #C9A861">reference</span>:
+                    </p>    
+                    
+                    <pre><code>
+Hi! I would like your help in adapting my CV to be aligned with the Job requirements. Make sure to optimize for ATS usage.
+
+Read the following before analysing (in order, output each number and the page views):
+
+1. CV: cv-en/master.tex (+ relevant variant if applicable: soc-analyst, cybersec-architect, devsecops, compliance-officer, platform-engineer)
+2. Website: GitHubHostedHome/: my master resume and homelab projects
+3. Job listing: file above
+
+Assess my compatibility (%) across:
+    - role,
+    - required technologies,
+    - language,
+    - degree, and
+    - experience.
+
+Be lenient — I'm consistently placed on projects given to people with more experience. Ask clarifying questions rather than assuming poor fit.
+If match ≥ 65%, proceed with creating a specific resume, Cover letter, ... that are optimized for ATS systems.
+Also output the analysis in chat.
+
+Create output for each of the following items:
+
+1. CV : Pick master.tex, copy to Companies/[Company]/Niklas-VanderMersch-cv-[role]_[date].tex, adapt by commenting/uncommenting. As a reference you will find several (older) CVs adapted previously. Never delete lines! Commented lines stay available for future roles. Only add new lines if genuinely missing.
+    - Make sure that the job title / header title matches my job titles.
+2. Cover letter: If useful, build Companies/[Company]/Niklas-VanderMersch-cover-[role]_[date].tex. Reference existing letters in Companies/ for tone and style. Make sure this includes:
+    1. Why I want to apply to the company
+    2. Some recent experience they're undergoing and how I have experience with that
+    3. How I am suited for the job and what I'm looking for. I am a person with broad experience, broad capabilities with a curious mind and an eagerness to learn and to help teams grow in maturity and capabilities. I take ownership over my job and my processes, improving them and others wherever I can.
+3. Obsidian note: Update Obsidian/[Company].md with:
+    - a link to the company
+    - the company values
+    - a summary of the application (and the compatibility, ...)
+    - the date I sent the application
+4. If, by asking any of the questions you notice there's gaps in my personal website, we'll adapt that too. The idea is for my website to have a complete (as possible) overview of my tasks and responsibilities over time.
+    Thus, add any technologies, experiences, ... and let me know how you've interpreted it.
+    flag it and suggest additions to GitHubHostedHome.
+
+Please do not remove lines from the resume, as the whole advantage of Latex is to be quickly able to uncomment my experiences for other roles
+                    </code></pre>
+
+                    <p>
+                        The output should give you an overview of your compatibility with the job listing. 
+                        For the sake of time and peace of mind, I generally discarded anything below 50% and focussed on those around 80%. 
+                        Every once in a while I'd encounter one where the match rate was right below my target, and I applied anyway if I liked the job after reading the listing myself more thoroughly.
+                    </p>
+
+                    <p>
+                        <span style="color: #C9A861">Next up,</span> let the AI generate the necessary files. 
+                        <br>
+                        If your profile does not match the job description, I <span style="color: #C9A861"><b>still ask the AI to research the company and generate a company note</b></span>. There's a few companies I learnt about in this way and I'd add them to my shortlist of companies to periodically check for job postings.
+                        <br>
+                        If there is a <span style="color: #C9A861">match</span>, I would let the AI <span style="color: #C9A861"><b>generate my resume, cover letter and company note</b></span> and I would <span style="color: #C9A861"><b>read the job description</b></span> in detail while that's going on in the background. 
+                        <br>
+                        Always check the resume first, being careful to <span style="color: #C9A861"><b>verify the AI didn't hallucinate anything</b></span>, exaggerate too much or generally bullshit. The goal is to reduce time spent on applying to jobs, not eliminate it (because that's currently not within the capabilities of an AI to do properly).
+                        Not every job requires a cover letter. Know that if your resume is already not a good match, most likely your motivation letter won't be read at all. 
+                        If you are a strong match, it might not be looked at anyway. So be wary of this.
+                        I often asked myself if I'd enjoy reading my own cover letter and the more it sounded like AI, the more I didn't want to read it. 
+                        It's only <span style="color: #C9A861"><b>when I had a catalogue of good reference cover letters</b></span> that the AI was able to generate proper cover letters that only needed minimal adjustment (the final goal).
+                        <br>
+                        <span style="color: #C9A861"><b>Finally</b></span>, I made sure the company note was in line with other company notes (in my Obsidian vault) and contained the necessary information. 
+                        Using this with a proper knowledge vault also let me track which companies and roles I'd applied to before and I could keep track of which applications I hadn't heard back about.
+                        
+                    </p>
+
+
+                    <h3 id="waiting">
+                        Dreadfully waiting
+                    </h3>
+                    <p>
+                        The worst part about the process is that after you've put in all that effort and time into sending out your resume and documents, you now have to wait indefinitely until the company replies.
+                        In my case, more than 97% of the time I received a rejection or no reply at all. Do not let it get to you personally. It's all a game and the only way to win is to play, but losing is not a failure of character. It mainly requires persistence to beat the system (unfortunately). I would recommend looking for networking opportunities and other ways to connect with people, but that's not always possible.
+                    </p>
+
+                    <h3 id="interview">
+                        Interviewing
+                    </h3>
+                    <p>
+                        Congratulations! You've made it to the interview process. Here is another area where I have an AI that can help you out.
+                        Remember I told you to save the job posting? Well that's going to surely come in handy now. I've had situations where the listing was now taken offline and I didn't save it - leading to my now explicit first step in the process of saving a job listing.
+                        <br>
+                        This part was actually exciting to me. Preparing for an interview is something I genuinely enjoyed using AI for. Not because of the accuracy of the questions, but <span style="color: #C9A861"><b>because it made me practise selling myself, talking about my accomplishments, and getting into the right mindset</b></span>.
+                        <br>
+                        Here is the prompt I used:
+                    </p>
+                    
+<pre><code>You are a technical interviewer helping me prepare for a job interview.
+
+Before starting:
+1. Ask me to paste the job listing
+2. Research the company — values, tech stack, culture, recent news, funding, product
+3. Generate 7-8 interview questions tailored to that specific company and role
+
+Interview rules:
+- Ask ONE question at a time
+- After my answer, give detailed feedback BEFORE moving to the next question:
+    · What landed well
+    · What missed the mark
+    · What a stronger answer would look like (model skeleton)
+    · What the interviewer was actually testing
+- Then ask: "Would you like to try again, or move on?"
+- Only move to the next question when I explicitly say I am ready
+- I answer by voice-to-text — be lenient with spelling and odd phrasing. Judge substance, not transcription.
+
+Feedback principles:
+- Be honest and direct — do not soften feedback to be polite
+- Call out when I skip part of a multi-part question
+- Flag generic answers not tailored to this specific company
+- Always note when I am missing metrics or concrete outcomes
+- Flag filler phrases: "I would need to be familiarised", "etcetera etcetera",
+"my role is no longer technical"
+- Target answer length: 90 seconds. Flag answers that are too long or too vague.
+- If I retry, compare explicitly to my previous attempt — what improved, what regressed
+
+At the end, generate a Markdown document with:
+- Every question asked
+- My best attempt at each
+- What worked / what did not per question
+- A model answer skeleton per question
+- Key phrases and terms to remember
+- An overall patterns section: recurring weaknesses
+- A quick reference card: company context, stack, culture, my key differentiators
+
+Start: ask me to paste the job listing, then begin.</code></pre>
+
+
+
+                    <h3 id="limits">What the pipeline does not replace</h3>
+                    <p>It is worth being honest about the limits here, because the tooling is a means to an end and not the point.</p>
+
+                    <p>The pipeline does not replace judgment about fit. A 72% compatibility score does not tell me whether I will thrive in a given team culture, whether the role actually has the hands-on ownership component I care about, or whether the hiring manager is someone I would actually want to work for. Those things come from conversations, from reading between the lines of a job posting, from talking to someone who works there.</p>
+
+                    <p>It does not replace the referral either. I still get more out of one message to someone I actually know than from ten polished applications sent cold. The pipeline is for after I have decided a company is worth pursuing, not for scaling up volume and hoping something sticks.</p>
+
+                    <p>And it does not replace rewriting the cover letter in my own voice. I said this already but it bears repeating. The AI gives me a scaffold. The sentence that actually makes an impression is always the one I wrote myself.</p>
+
+                    <h3 id="why">Why bother building this</h3>
+                    <p>Honestly, because job hunting is exhausting enough without also having to manage the operational overhead of it. Every application where I do not have to start from scratch, every interview where I walk in having already thought through the hard questions, every note that means I do not have to reconstruct what I know about a company from memory and those things add up.</p>
+
+                    <p>And there is something to be said for treating the search as a project with a system behind it rather than a series of one-off tasks. It makes the whole thing feel less like being at the mercy of a process and more like running one.</p>
+                </div>
+                <a class="blog-article__back" href="../index.html">
+                    <span aria-hidden="true">←</span>
+                    <span>Back to the homepage</span>
+                </a>
+            </article>
+        </section>
+    </main>
+</body>
+</html>

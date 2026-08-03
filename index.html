@@ -15,6 +15,7 @@
       instagram: 'https://www.instagram.com/n.vdm/?__d=11',
       youtube: 'https://www.youtube.com/@nvdmmm',
       github: 'https://github.com/niklasvdm',
+      jobSearchPipeline: 'posts/job-search-pipeline.html',
       billbuddyArticle: 'posts/publicly-exposing-billbuddy.html',
       freeGithubHosting: 'posts/free-github-hosting.html',
       installProxMox: 'posts/InstallProxmox.html',
@@ -34,8 +35,8 @@
     <div class="sidebar__inner">
       <img class="sidebar__photo" src="assets/photo.png" alt="Niklas Van der Mersch" loading="lazy">
       <h1 class="sidebar__name">Niklas Van der Mersch</h1>
-      <p class="sidebar__role">Cybersecurity Architect</p>
-      <span class="sidebar__badge">Working @ Splynter</span>
+      <p class="sidebar__role">Cybersecurity Engineer</p>
+      <span class="sidebar__badge">Working @ Bug Bounty Switzerland</span>
 
       <div class="sidebar__social">
         <a href="#" data-link-key="github" class="sidebar__social-link" aria-label="GitHub">
@@ -188,6 +189,7 @@
             <span class="tag">Suricata</span>
             <span class="tag">YARA</span>
             <span class="tag">Sigma</span>
+            <span class="tag">Burp Suite</span>
             <span class="tag tag--dim">Velociraptor</span>
             <span class="tag tag--dim">Snort</span>
             <span class="tag tag--dim">Zeek</span>
@@ -220,6 +222,8 @@
             <span class="tag">SAST</span>
             <span class="tag">PowerShell</span>
             <span class="tag">Microsoft Sentinel</span>
+            <span class="tag">n8n</span>
+            <span class="tag">Azure Logic Apps</span>
             <span class="tag tag--dim">RASP</span>
             <span class="tag tag--dim">KQL</span>
             <span class="tag tag--dim">JavaScript</span>
@@ -272,13 +276,13 @@
           <div class="lang-bar">
             <span class="lang-bar__label">German</span>
             <div class="lang-bar__track">
-              <div class="lang-bar__fill" style="width:58%"><span>B1/B2</span></div>
+              <div class="lang-bar__fill" style="width:65%"><span>B2</span></div>
             </div>
           </div>
           <div class="lang-bar">
             <span class="lang-bar__label">French</span>
             <div class="lang-bar__track">
-              <div class="lang-bar__fill" style="width:50%"><span>B1</span></div>
+              <div class="lang-bar__fill" style="width:58%"><span>B1/B2</span></div>
             </div>
           </div>
         </div>
@@ -316,7 +320,22 @@
           <div class="timeline__item">
             <div class="timeline__dot"></div>
             <div class="timeline__content">
-              <span class="timeline__date">05/2025 — Present</span>
+              <span class="timeline__date">07/2026 — <i>Present</i></span>
+              <h4 class="timeline__role">Cybersecurity Engineer</h4>
+              <span class="timeline__company">Bug Bounty Switzerland · Zürich, Switzerland</span>
+              <ul class="timeline__details">
+                <li>Acting as the technical interface between ethical hackers and enterprise customers, validating, communicating and driving remediation of reported vulnerabilities across financial services, critical infrastructure and government clients</li>
+                <li>Building <span style="color: #C9A861"><b>automated triage pipelines</b></span> for vulnerability severity scoring and risk assessment, codifying <span style="color: #C9A861"><b>CVSS</b></span>-based methodologies into scalable workflows to reduce manual triage effort over time</li>
+                <li>Owning technical delivery of security testing programs end-to-end, from environment/strategy setup through execution, applying <span style="color: #C9A861"><b>OWASP Top 10</b></span> and modern web architecture knowledge with <span style="color: #C9A861"><b>Burp Suite</b></span> to validate and reproduce reported vulnerabilities</li>
+                <li>Serving as a trusted technical advisor to customers, guiding them through the setup and integration of security testing into their organisational processes</li>
+                <li>Developing automation tooling (scripting, APIs, workflow automation) to support duplicate detection, validation checks and report generation, reducing reliance on manual triage</li>
+              </ul>
+            </div>
+          </div>
+          <div class="timeline__item">
+            <div class="timeline__dot"></div>
+            <div class="timeline__content">
+              <span class="timeline__date">05/2025 — 06/2026</span>
               <h4 class="timeline__role">Cybersecurity Architect</h4>
               <span class="timeline__company">Splynter · Antwerp, Belgium</span>
               <ul class="timeline__details">
@@ -460,6 +479,11 @@
     <section id="works" class="section">
       <h2 class="section__title">Blog Posts</h2>
       <div class="cards">
+        <article class="card">
+          <span class="card__meta">May 28, 2026 · Guide</span>
+          <a class="card__title" href="#" data-link-key="jobSearchPipeline">Reducing the emotional pains of looking for a job using automation</a>
+          <p class="card__excerpt">Building a proper job search pipeline: a LaTeX CV you never delete lines from, an AI prompt that handles compatibility checks and tailored applications, and Obsidian to track all of it.</p>
+        </article>
         <article class="card">
           <span class="card__meta">March 7, 2026 · Guide</span>
           <a class="card__title" href="#" data-link-key="gotenbergLxcHomelab">Deploying Gotenberg: a proper PDF API for the home lab</a>

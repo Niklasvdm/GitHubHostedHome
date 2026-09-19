@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Becoming a miner and setting up network tunnels</title>
+  <link rel="icon" type="image/png" href="../assets/Logo.png">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script src="../js/script.js" defer></script>
+</head>
+<body>
+    <div id="header">
+        <div id="title-div">
+            <div id="title">Niklas Van der Mersch</div>
+        </div>
+    </div>
+
+    <main>
+        <section id="blog-post">
+            <h2 class="section-title">Becoming a miner and setting up network tunnels</h2>
+            <article class="content-box blog-article" data-order="1">
+                <a class="blog-article__back blog-article__back--top" href="../index.html">
+                    <span aria-hidden="true">←</span>
+                    <span>Back to the homepage</span>
+                </a>
+                <div class="blog-article__meta">
+                    <span>September 13, 2026</span>
+                    <span>~12 minute read</span>
+                    <span>Tags: homelab, WireGuard, VPN, Terraform, proxmox, networking, iptables</span>
+                </div>
+                <div class="markdown-body">
+                    <nav style="border:1px solid #262626;border-radius:8px;padding:1rem 1.5rem;margin-bottom:2rem;font-size:13px;line-height:2.1;">
+                        <span style="font-size:11px;color:#8a8a8a;text-transform:uppercase;letter-spacing:0.08em;font-weight:600;">Contents</span>
+                        <ol style="margin:0.5rem 0 0;padding-left:1.4rem;">
+                            <li><a href="#problem" style="color:#C9A861;text-decoration:none;">The problem</a></li>
+                            <li><a href="#attempt-one" style="color:#C9A861;text-decoration:none;">Attempt one: A Dynamic DNS</a></li>
+                            <li><a href="#non-attempt" style="color:#C9A861;text-decoration:none;">The non-attempt: TailScale and CloudFlare</a></li>
+                            <li><a href="#attempt-two" style="color:#C9A861;text-decoration:none;">Attempt two: Hypocricy of man</a>
+                                <ol style="padding-left:1.2rem;margin:0;line-height:2.1;">
+                                    <li><a href="#humble-beginnings" style="color:#8a8a8a;text-decoration:none;">Humble beginnings</a></li>
+                                    <li><a href="#terminology" style="color:#8a8a8a;text-decoration:none;">Terminology and Jargon</a></li>
+                                    <li><a href="#adding-peers" style="color:#8a8a8a;text-decoration:none;">Adding peers and the consequences of skipping university assignments</a></li>
+                                    <li><a href="#docker-gotcha" style="color:#8a8a8a;text-decoration:none;">The Docker gotcha</a></li>
+                                    <li><a href="#securing-it" style="color:#8a8a8a;text-decoration:none;">Making my own vibe coded slop secure</a></li>
+                                    <li><a href="#project-layout" style="color:#8a8a8a;text-decoration:none;">Setting myself apart from an easel</a></li>
+                                    <li><a href="#crypto" style="color:#8a8a8a;text-decoration:none;">For the curious: what's actually encrypting this</a></li>
+                                    <li><a href="#references" style="color:#8a8a8a;text-decoration:none;">References</a></li>
+                                </ol>
+                            </li>
+                            <li><a href="#whats-next" style="color:#C9A861;text-decoration:none;">What's next</a></li>
+                        </ol>
+                    </nav>
+
+                    <h3 id="problem">The problem</h3>
+                    <p>After moving to Switzerland, I was eager to set up my home lab and start playing around with my Infrastructure again. My head and my vault full of automation ideas, I could not wait until the day my connectivity was restored top to bottom.
+                    I wanted to use the fruits of my previous labour and <span style="color: #C9A861"><b>simply set up what I knew</b></span>: install my router, hook up my computer and open a port and shabang! Setup complete, services and access restored. <br> <br>
+                    
+                    
+                    But wait! There's a problem! The problem's name is <a href="https://en.wikipedia.org/wiki/Carrier-grade_NAT">CGNAT - Carrier grade NAT</a>. For those uninitiated, this means no static IPv4 unless you're paying. Wanting to defy the internet, I did check how often my address rotated and <span style="color: #C9A861"><b>what I saw did not bring me joy</b></span>. Quite a big IPv6 range and quite a bit of rotation with IPv4 so I had to come up with a creative solution to this problem.<br>
+                    </p>
+                    <h3 id="attempt-one">Attempt one: A Dynamic DNS</h3>
+                    <p>
+                        Attempt one consisted of setting up a Dynamic DNS resolver. The problem seemed simple: my IP rotates? Just check what the IP is and update the DNS record. This adventure lead me to compare <a href="https://github.com/qdm12/ddns-updater">ddns-updater</a> and <a href="https://ddclient.net/">dnsclient</a>, but both of them had the same problem: they didn't yet use the newest GoDaddy API spec. <br>
+                        Maybe one day I'll make a post on the adventure of setting up a Dynamic DNS, including publishing the repo. But as is the case with all my posts up until now, I seriously doubt many people will read it or be very interested in me making those GitHub repos public.
+                    </p>
+                    <p>
+                        Now I had a new LXC container ready to go. Some Python code (I recently re-discovered how pleasant Python can be, especially when combined with UV).
+                        However, this approach <span style="color: #C9A861"><b>stopped dead in its tracks and the reason is one of the first lessons of project management: make sure your dependencies are clear and will not block you</b></span>.
+                    </p>
+
+                    <h3 id="non-attempt"><i>The non-attempt: TailScale and CloudFlare</i></h3>
+                    <p>
+                        I can already hear the people pulling their hair when I'm explaining this and saying "<i>Niklas, why aren't you just using <a href="https://tailscale.com/">Tailscale</a>!?</i>". <br>
+                        I know about Tailscale and its magical properties: <span style="color: #C9A861"><b>a direct connection to your infrastructure without ever opening a port</b></span>. It really does sound like the closest thing that can compare to <span style="color: #C9A861"><b>magic</b></span>.
+                        The solution is clever and I do like it, I only hold respect towards the people behind the technology.
+                    </p>
+                    <p>
+                        But the answer as to why I don't want to use it is simple: <span style="color: #C9A861"><b>I don't like depending on third party infrastructure</b></span>. 
+                        The whole point of me of a Home Lab is to disconnect as much as possible from code and infrastructure others control.
+                        Tailscale requires their servers to at a minimum set up a connection, and if the clever techniques they use to send up E2E connections don't work out, you're relying on their infra to connect.
+                        <br>
+                        There is also the matter of me needing a public endpoint. Google OAuth callbacks, public HTTPS servers, ... cannot operate without a public IP tied to a DNS entry.
+                        <i>But Niklas! Then just use CloudFlare</i>. 
+                        I hate that argument even more. 
+                        Ever see those graphs that when CloudFlare goes down, so does half the internet?
+                    </p>
+                    <p>
+                        Over reliance on others' infra is a dependency I find unacceptable. It forces you to at least try different things.
+                        The words <span style="color: #C9A861"><b>we value an achievement more when it was hard</b></span> rang through my mind, so I quickly moved on.
+                    </p>
+                    
+                    <h3 id="attempt-two">Attempt two: Hypocricy of man</h3>
+                    <p>
+                        So the only solution left was to use someone else's infrastructure. After considering my 🇪🇺 European options, I settled on Infomaniak. There was a deal going on I couldn't resist. Even though they are quite small and have some unfortunate limitations, I still deemed it the best price vs. quality.
+                    </p>
+                    <p>
+                        And especially given my whole setup has always been about flexibility and easy disaster recovery ,<a href="InstallProxmox.html">using Terraform and deployment scripts</a>, I was sure I'd be done in no time!
+                    </p>
+                    
+                    <img src="../assets/homelab-deployment-diagram.svg" alt="Deployment Diagram">
+
+                    <h4 id="humble-beginnings">Humble beginnings</h4>
+                    <p>
+                        Did I already say that Infomaniak has no Terraform tenant? 
+                        This was the pain I immediately felt and my master plan looked more like Swiss Cheese than I wanted to admit.
+                        Steps one was to understand WireGuard and make sure it'd get set up properly. Spokes, peers and other terminology that I hadn't seen since the textbooks in University... 
+                        But the idea seemed simple enough. 
+                        <span style="color: #C9A861"><b>No public IP? I'll add a tunnel</b></span> that goes from my public endpoints (Infomaniak's VPS) to my Home lab. 
+                        As long as it gets set up from my Home lab, no public IP would be required. 
+                    </p>
+                    <p>
+                        Since there was no Terraform available, this half of the setup is just bash over SSH: install <code>wireguard</code>, enable IP forwarding, generate a key pair, write <code>wg0.conf</code>, done.
+                        This felt like going old-school. I have a lot of respect (and a little bit of pity) to all the guys who had to do this for years and years. 
+                        <br>
+                        The VPS has a kernel, so some of the issues I'd later encounter with privileged/non-privileged LXC didn't come up here (<i>a recurring topic unfortunately</i>). 
+                        With this part quickly done, I could validate that I could connect to the public IP with WireGuard (after first connecting with SSH, so this part didn't feel like much of a win to be honest).
+                        <br>
+                        I was already encountering network problems when doing this. 
+                        NAT, configuration of open ports, ... nothing I couldn't understand but stuff my mind had clearly not wanted to remind me of when I started this project enthusiastically.
+                        Customization and hardening is what you should be doing if you're an infra provider, but it made my life just slightly harder. 
+                    </p>
+                    <p>
+                        Finally, <span style="color: #C9A861"><b>I was able to enjoy some fruits of my labor, because <a href="publicly-exposing-billbuddy.html"> exposing my WAF</a> was only a matter of running my setup script with small changes to the configuration.</b></span> This was where the momentum changed and I felt a healthy amount of confidence.
+                        <br>
+                        <i>Narrator's comment: it did not last long!</i>
+                    </p>
+
+                    <h4 id="terminology">Terminology and Jargon</h4>
+                    <p>
+                        When implementing this thing with AI, I got so many words thrown at me I'd never heard before that made me think I was in a Mad Max universe. <b>Road warrior</b>, <b>site-to-site</b>, <b>gateway</b>, <b>CIDR</b> and many others mean nothing if you haven't spent time in networking.
+                        <br>
+                        Here's an overview of jargon, going from recognizable to troll-under-the-bridge.
+                    </p>
+                    <ul>
+                        <li><span style="color: #C9A861"><b>VPN</b></span>: Starting off easy. An encrypted tunnel over the normal internet that makes two devices act like they're plugged into the same local network.</li>
+                        <li><span style="color: #C9A861"><b>Tunnel</b></span>: The encrypted connection itself. Also used term: Site to Site.</li>
+                        <li><span style="color: #C9A861"><b>Peer</b></span>: WireGuard's word for "one participant." 
+                        <i>If you know this term you might also be a sailor from time to time...</i>
+                        Doesn't matter if it's my phone, my laptop, or a server. 
+                        Every device in the tunnel is just a peer, identified by a cryptographic key instead of a username or an IP address.</li>
+                        <li><span style="color: #C9A861"><b>Hub</b></span> not an official WireGuard term, just what I call the one peer everything else connects <i>to</i>: the one with a fixed, public address that's always reachable. Everyone else just needs to know the hub's address; the hub doesn't need to know anyone else's in advance.</li>
+                        <li><span style="color: #C9A861"><b>Road warrior</b></span>: old, slightly ridiculous VPN-industry jargon (I didn't invent it) for a device that moves around and has no fixed network of its own.
+                        It could be a phone or laptop connecting from wherever it happens to be: home Wi-Fi, a coffee shop, mobile data on a train. It's "on the road," hence the name.</li>
+                    </ul>
+
+
+                    <h4 id="adding-peers">Adding peers and the consequences of skipping university assignments</h4>
+                    <p>
+                        Stay in school kids.
+                        That's all I could think of while encountering network problem after network problem.
+                        Getting an <span style="color: #C9A861"><b>LXC container that installed WireGuard and connected to the public server was easy</b></span>.
+                        Making sure traffic actually flowed through the tunnel in the other direction was hard. Forwarding rules, IP collisions, subnetwork considerations, ...
+                        I spent much time thinking about how those extra projects I could've picked up in Computer Networking would've come in handy here.
+                    </p>
+                    <p>
+                        First embarrassment: my code for adding a peer has a guard whose entire job is refusing to register a tunnel IP that's already taken. 
+                        Straightforward right?
+                        Read the existing <code>wg0.conf</code>, grep for it, bail if found. 
+                        <br>
+                        Testing has never been my forte and it showed. 
+                        I only noticed something was wrong because I fat-fingered an IP that should have collided and the script happily wrote a second <code>[Peer]</code> block anyway, no complaint. 
+                        The grep pattern expected exactly one space on each side of the <code>=</code> in <code>AllowedIPs = x.x.x.x/32</code>, and the file it was matching against had two. 
+                        <span style="color: #C9A861"><b>A safety check that silently does nothing is worse than no safety check</b></span>, a lesson probably written somewhere after one guy woke up at 4 AM because their server wouldn't run the thing it was supposed to.
+                    </p>
+                    <pre><code>
+# what it was checking for (too strict — real spacing varies)
+grep -q "AllowedIPs = ${PEER_IP}/32" wg0.conf
+
+# what actually catches it
+grep -qE "AllowedIPs[[:space:]]*=.*${PEER_IP}/32" wg0.conf
+                    </code></pre>
+                    <p>
+                        Second embarrassment, purely conceptual this time: <code>AllowedIPs</code> means <span style="color: #C9A861"><b>two completely different things depending on which config you're staring at</b></span>. 
+                        On the hub's config, it's a filter that means "<i>only accept a packet from this peer if it claims this source, and route traffic for this destination to them.</i>" 
+                        On the peer's own config, the exact same key is a route: "<i>send traffic for these destinations into the tunnel.</i>" 
+                        I naively set the gateway's own <code>AllowedIPs</code> to <code>0.0.0.0/0</code> out of pure habit. 
+                        That's what every road-warrior client config in this repo does, and I then lost a good twenty minutes wondering why my home LAN was suddenly trying to shove <i>all</i> of its traffic through a tunnel that had no business carrying it.
+                        The fix was one line making it site-to-site instead of full-tunnel. 
+                        Finding it meant actually reading what the field does on each side instead of assuming it's symmetric because it's spelled the same.
+                    </p>
+                    <p>
+                        Third, and the one that ate the most time: getting a packet from the VPS to land on a home-LAN device and actually come back is three separate things that all have to be true simultaneously, and WireGuard itself only ever handles one of them. 
+                        <code>net.ipv4.ip_forward</code> has to be <code>1</code> on the gateway, or it drops anything not addressed to itself without a word. 
+                        A <code>MASQUERADE</code> rule in <code>POSTROUTING</code> has to rewrite the source, or the LAN device's reply tries to route directly back to a <code>10.13.13.x</code> address it has never heard of and has no route to. 
+                        And the kernel's default <code>FORWARD</code> policy has to actually let the packet through the box at all. 
+                        Get any one of those three wrong and the symptom is identical every time: a flawless handshake, <code>wg show</code> looking exactly right on both ends, and 100% packet loss the moment you try to reach anything past the tunnel itself.
+                    </p>
+                    <p>
+                        I eventually got all three right and scoped tightly to just the services subnet, not the whole LAN, per the design constraints above. It <i>still</i> didn't work. Which is its own, more annoying story.
+                    </p>
+
+                    <h4 id="docker-gotcha">The Docker gotcha</h4>
+                    <p>
+                        Everything came up clean. Handshake completed on both ends, <code>wg show</code> looked exactly right, keys matched. 
+                        Having learnt from my previous experience, I thought that before unleashing traffic I should probably try to ping something on the home LAN from the VPS side. 
+                        <span style="color: #C9A861"><b>100% packet loss</b></span>. 
+                        No errors, no handshake failure, just... nothing coming back.
+                    </p>
+                    <p>
+                        Because my ModSecurity-WAF relies on Docker, apparently it flips the kernel's <code>FORWARD</code> chain to a default-<b>DROP</b> policy and inserts its own <code>DOCKER-USER</code>/<code>DOCKER-FORWARD</code> chains ahead of anything else.
+                        I have used Docker for about 10+ years now and like many other details this one either was new to me or had simply been forgotten and replaced with other useless information that is only relevant once in 10 years. <br>
+                        My WireGuard NAT rule never even got a chance to run. <code>iptables -L FORWARD -v -n</code> showed the packets arriving and dying right there, with a fat zero on my own rule's counter the whole time.
+                    </p>
+                    <p>
+                        The fix is to add the same accept rules into <code>DOCKER-USER</code> specifically, thereby making sure DOCKER won't rewrite the rule.
+                         Took a second pass to get the scoping right too: my first attempt only allowed traffic headed out to the internet, which happened to break the actual site-to-site case (a peer's traffic hairpinning back out through <code>wg0</code> to reach the gateway, never touching the WAN interface at all). <br>
+                         Got there in the end though, with the following rules:
+                    </p>
+                    <pre><code>
+iptables -I DOCKER-USER -i wg0 -o ens3 -j ACCEPT
+iptables -I DOCKER-USER -o wg0 -i ens3 -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+iptables -I DOCKER-USER -i wg0 -o wg0 -j ACCEPT
+                    </code></pre>
+
+
+                    <h4 id="securing-it">Making my own vibe coded slop secure</h4>
+                    <p>I was feeling pretty good about myself at this point. 
+                        Technical issues seemed to be solved, now it was time to make sure my deployment included hardening, didn't expose my whole IP range and the keys weren't saved needlessly anywhere.</p>
+                    <ul>
+                        <li><span style="color: #C9A861"><b>Only a narrow, purpose-built subnet gets exposed through the tunnel</b></span>, not the whole home LAN. 
+                            If the VPS or the tunnel ever gets popped, the blast radius stops at a handful of hosts, not my NAS and every smart bulb in the house.</li>
+                        <li>The gateway dials <i>out</i> to the VPS, never the other way. Home has no public IP, so it has to be the initiator. <code>PersistentKeepalive</code> is non-negotiable here: without it, the moment the home connection's NAT mapping expires, the VPS has no way back in.</li>
+                        <li>I tried to fight this one but had to concede defeat: <span style="color: #C9A861"><b>privileged LXC</b></span>.
+                            No tun-passthrough dance needed, since a privileged container can talk to the kernel WireGuard module directly.</li>
+                    </ul>
+
+
+                    
+                    <h4 id="project-layout">Setting myself apart from an easel</h4>
+                    <p>
+                        In Dutch there's an expression that a donkey doesn't stub its toe twice on the same rock.
+                        We basically mean that if you make the same mistake twice, you're dumber than a donkey.
+                        <br>
+                        Besides the fact that I only later learnt that donkeys aren't dumb animals at all, I did learn through this that learning from mistakes is called wisdom. 
+                    </p>
+                    <p>
+                        My home lab projects end up all looking alike these days. 
+                        I therefore thought I'd share what my projects always end up looking like:</p>
+                    <pre><code>
+.
+├── infra/
+│   ├── lxc/            # Proxmox: Terraform, unprivileged LXC, wireguard-go + tun passthrough
+│   ├── vps/             # Plain VPS: no Terraform, just bash over SSH, kernel WireGuard
+│   └── lxc-gateway/     # Proxmox: Terraform, privileged LXC, site-to-site gateway
+├── scripts/
+│   ├── add-peer.sh              # Register a new device (or gateway) on a hub
+│   ├── setup-home-gateway.sh    # Configure a privileged LXC as a client/gateway
+│   ├── list-peers.sh            # Show configured peers + live handshake status
+│   ├── backup-wireguard.sh      # Archive /etc/wireguard locally
+│   └── restore-wireguard.sh     # Restore from that archive
+├── update/
+│   └── update-wireguard.sh      # OS + WireGuard package updates, with a restart
+└── hardening/
+    └── harden.sh                # SSH lockdown, fail2ban, unattended-upgrades, iptables
+                    </code></pre>
+                    <p>
+                        The infra folder contains everything about deploying something.
+                        Easiest when it's Terraform/lxc, but it could be anything really.
+                        The VPS configuration is just connecting to the device and device-specific configuration commands. <br>
+                        <code>scripts/</code> operates on it afterward, and doesn't care how it got there.
+                        These are the utils that I need either during or after deployment.
+                        <br>
+                        Hardening and update are the ones I don't want to have to do manually each time. 
+                        I just want to include the folders in my CRON job to make sure these scripts run every once in a while so I don't have to worry about them.</p>
+                    
+                    <h4 id="crypto">For the curious: what's actually encrypting this (skip freely, nothing above depends on it)</h4>
+                    <p>
+                        I never actually said what's doing the encrypting, so: WireGuard doesn't let you pick a cipher the way HTTPS does. 
+                        One fixed set of algorithms, no negotiation, no options menu to misconfigure.
+                        If one of them is ever broken, the whole protocol gets a new version instead of a settings toggle nobody would ever change anyway.
+                    </p>
+                    <ul>
+                        <li><span style="color: #C9A861"><b>Curve25519</b></span>: the math used to let two peers agree on a shared secret over a public connection, without ever sending the secret itself.</li>
+                        <li><span style="color: #C9A861"><b>ChaCha20-Poly1305</b></span>: the actual cipher that scrambles (and verifies nobody tampered with) every packet, using the secret from above.</li>
+                        <li><span style="color: #C9A861"><b>BLAKE2s</b></span>: a hashing function used as a building block inside the handshake.</li>
+                        <li><span style="color: #C9A861"><b>SipHash24</b></span>: used internally so a busy hub can reject junk/garbage packets almost instantly, without wasting real encryption work on strangers just poking at its port.</li>
+                        <li><span style="color: #C9A861"><b>HKDF</b></span>: turns the one shared secret from the handshake into the actual set of keys used for the rest of the session.</li>
+                    </ul>
+                    <p>
+                        All of it is assembled using the <a href="https://noiseprotocol.org/noise.html" target="_blank" rel="noopener noreferrer">Noise Protocol Framework</a>: a recipe book for building secure handshakes out of small, well-studied pieces instead of inventing something new (Signal's protocol is built the same way). It's also the actual mechanism behind <code>AllowedIPs</code> doubling as a filter: WireGuard calls this <span style="color: #C9A861"><b>cryptokey routing</b></span>. A public key is tied to a list of IPs, and a packet only gets accepted if its source matches what that specific key is allowed to claim. The access-control list and the routing table are, underneath, the same piece of data. Took me a while to realize the whole security model really does boil down to that one sentence.
+                    </p>
+                    <h4 id="references">References</h4>
+                    <ul>
+                        <li><a href="https://www.wireguard.com/papers/wireguard.pdf" target="_blank" rel="noopener noreferrer">WireGuard: Next Generation Kernel Network Tunnel</a> — the original whitepaper. Short, readable, and the primary source for everything in this section.</li>
+                        <li><a href="https://www.wireguard.com/protocol/" target="_blank" rel="noopener noreferrer">wireguard.com/protocol</a> — the condensed, no-whitepaper-required version.</li>
+                        <li><a href="https://man7.org/linux/man-pages/man8/wg-quick.8.html" target="_blank" rel="noopener noreferrer">wg-quick(8)</a> — every config directive this repo generates, documented properly.</li>
+                        <li><a href="https://noiseprotocol.org/noise.html" target="_blank" rel="noopener noreferrer">Noise Protocol Framework specification</a> — for anyone who wants to see the handshake patterns WireGuard's is built from.</li>
+                        <li><a href="https://datatracker.ietf.org/doc/html/rfc7748" target="_blank" rel="noopener noreferrer">RFC 7748</a> — Curve25519 and Curve448, for the actual math.</li>
+                    </ul>
+
+                    <h3 id="whats-next">What's next</h3>
+                    <p>
+                        The mesh itself is done and it's been solid for a few weeks now.
+                        The services are running, the flows are flowing and automations are automating.
+                        <br>
+                        I am quite happy with the result and can easily VPN to my home network now without having an IP exposed.
+                        I'd always been afraid of this setup, but from an architectural point of view I'm actually quite proud of myself.
+                        <br>
+                        For now I would like to expand my catalogue of running N8N flows. 
+                        I had to purge some after moving because they lost their purpose, but luckily I have a long list of ideas and requests from friends that are waiting for me. 
+                    </p>
+                    
+                </div>
+                <a class="blog-article__back" href="../index.html">
+                    <span aria-hidden="true">←</span>
+                    <span>Back to the homepage</span>
+                </a>
+            </article>
+        </section>
+    </main>
+</body>
+</html>
